@@ -1,0 +1,48 @@
+{
+  "id": "dp_ask_grownup",
+  "prompt": "The grown-up asks if anyone needs help. What do you say?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["courage", "empathy"],
+  "options": [
+    {
+      "id": "opt_share",
+      "label": "Jamie felt left out earlier. We invited them — can you check in too?",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_fine",
+      "label": "We're fine, thanks!",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_secret",
+      "label": "Nothing. Don't tell anyone.",
+      "selScore": "poor"
+    }
+  ],
+  "companionContext": {
+    "situation": "Trusted adult offers support after inclusion moment",
+    "npcEmotion": "supportive",
+    "ageBand": "5-7"
+  },
+  "consequences": [
+    { "band": "strong", "sceneId": "e3", "fx": ["celebration"], "meterDeltas": { "courage": 0.75, "empathy": 0.25 } },
+    { "band": "partial", "sceneId": "e3", "meterDeltas": { "courage": 0.25 } },
+    { "band": "poor", "sceneId": "e3", "repairAction": "sit-with" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "proud, a little shy",
+    "childStateExiting": {
+      "strong": "brave, connected to grown-up support",
+      "partial": "okay, still learning to ask",
+      "poor": "redirected toward safe sharing"
+    },
+    "companionStance": {
+      "strong": "proud, upright",
+      "partial": "gentle nod",
+      "poor": "soft reminder: secrets that hurt need grown-ups"
+    },
+    "recoveryCadence": "poor → companion models asking for help → celebration"
+  }
+}

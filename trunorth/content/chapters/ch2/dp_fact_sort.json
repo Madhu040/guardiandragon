@@ -1,0 +1,64 @@
+{
+  "id": "dp_fact_sort",
+  "prompt": "Wize: \"Sometimes our minds tell stories before we know the facts.\" Which thought is a STORY?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["worry_brave", "adapting_to_change"],
+  "pivotLockMs": 1500,
+  "options": [
+    {
+      "id": "opt_noise",
+      "label": "\"The bridge makes noises.\"",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_might",
+      "label": "\"We might fall.\"",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_will_break",
+      "label": "\"The bridge WILL break.\"",
+      "selScore": "strong"
+    }
+  ],
+  "companionContext": {
+    "situation": "Sorting FACT vs MAYBE vs STORY after inspecting the Singing Bridge",
+    "npcEmotion": "uncertainty",
+    "ageBand": "8-10"
+  },
+  "consequences": [
+    {
+      "band": "strong",
+      "sceneId": "w4",
+      "fx": ["worry_cloud_shrink"],
+      "meterDeltas": { "worry_brave": 0.5, "adapting_to_change": 0.35 }
+    },
+    {
+      "band": "partial",
+      "sceneId": "w3",
+      "fx": ["gentle_nudge"],
+      "repairAction": "sit-with",
+      "meterDeltas": { "worry_brave": 0.1 }
+    },
+    {
+      "band": "poor",
+      "sceneId": "w3",
+      "repairAction": "sit-with"
+    }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "curious about thoughts",
+    "childStateExiting": {
+      "strong": "clear, flexible thinking",
+      "partial": "gently redirected",
+      "poor": "safe retry"
+    },
+    "companionStance": {
+      "strong": "blushing, soft laugh",
+      "partial": "listening to Wize",
+      "poor": "waiting without shame"
+    },
+    "recoveryCadence": "mis-sort → Wize invites another try → stars on correct story"
+  }
+}

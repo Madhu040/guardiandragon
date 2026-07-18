@@ -1,0 +1,17 @@
+{
+  "id": "dlg_bridge_legend",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "Ah, a traveler! This old scroll tells the legend of the Singing Bridge. They say the planks hum a tiny song with every brave step."
+    },
+    {
+      "text": "Many friends have felt their tummy flutter before crossing. That flutter is just your body getting ready — it doesn't mean the bridge will break."
+    },
+    {
+      "text": "When you reach the far side, listen closely. The bridge sings loudest for the ones who crossed even though they were worried."
+    }
+  ]
+}

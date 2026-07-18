@@ -1,0 +1,43 @@
+{
+  "id": "dp_breathe",
+  "prompt": "Place a calm hand with Flicker. Tap each breath — five slow cycles.",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["calm", "worry_brave"],
+  "options": [
+    { "id": "breath_1", "label": "Breath 1 — In… 2… 3… Out…", "selScore": "partial" },
+    { "id": "breath_2", "label": "Breath 2 — Heart slows…", "selScore": "partial" },
+    { "id": "breath_3", "label": "Breath 3 — Tail untangles…", "selScore": "partial" },
+    { "id": "breath_4", "label": "Breath 4 — Fire softens…", "selScore": "partial" },
+    { "id": "breath_5", "label": "Breath 5 — Eyes softer", "selScore": "strong" }
+  ],
+  "companionContext": {
+    "situation": "Body still alarmed after thinking; co-regulate with Flicker through breathing",
+    "npcEmotion": "anxiety",
+    "ageBand": "8-10"
+  },
+  "consequences": [
+    {
+      "band": "strong",
+      "sceneId": "w5",
+      "fx": ["calm_wave"],
+      "meterDeltas": { "calm": 1.0, "worry_brave": 0.25 }
+    },
+    { "band": "partial", "sceneId": "w4", "meterDeltas": { "calm": 0.2 } },
+    { "band": "poor", "sceneId": "w4", "repairAction": "tap-kind-action" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "mind clearer, body still buzzing",
+    "childStateExiting": {
+      "strong": "calmer body, still honest about nerves",
+      "partial": "mid-breath, progressing",
+      "poor": "encouraged to continue"
+    },
+    "companionStance": {
+      "strong": "sigh of relief, softer sparks",
+      "partial": "matching the breath",
+      "poor": "waiting with player"
+    },
+    "recoveryCadence": "each successful breath slows heart, untangles tail, softens fire"
+  }
+}

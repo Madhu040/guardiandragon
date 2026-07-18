@@ -1,0 +1,42 @@
+{
+  "id": "dp_crossing",
+  "prompt": "Cross together — one careful plank at a time.",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["courage", "worry_brave"],
+  "options": [
+    { "id": "plank_1", "label": "First plank — creak…", "selScore": "partial" },
+    { "id": "plank_2", "label": "Second plank — still holding", "selScore": "partial" },
+    { "id": "plank_3", "label": "Halfway — \"…we're doing it.\"", "selScore": "partial" },
+    { "id": "plank_4", "label": "One more step — cross!", "selScore": "strong" }
+  ],
+  "companionContext": {
+    "situation": "Crossing the Singing Bridge while still feeling nervous; exposure with support",
+    "npcEmotion": "brave-while-scared",
+    "ageBand": "8-10"
+  },
+  "consequences": [
+    {
+      "band": "strong",
+      "sceneId": "w7",
+      "fx": ["celebration", "courage_feather"],
+      "meterDeltas": { "courage": 1.0, "worry_brave": 0.75, "self_worth": 0.35 }
+    },
+    { "band": "partial", "sceneId": "w6", "meterDeltas": { "courage": 0.2 } },
+    { "band": "poor", "sceneId": "w6", "repairAction": "tap-kind-action" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "nervous, choosing approach",
+    "childStateExiting": {
+      "strong": "proud, tearfully joyful",
+      "partial": "mid-bridge, progressing",
+      "poor": "supported to continue"
+    },
+    "companionStance": {
+      "strong": "\"I thought we couldn't… but we did.\"",
+      "partial": "peeking, whispering",
+      "poor": "held close"
+    },
+    "recoveryCadence": "cross while anxious → Courage Feather for walking with courage"
+  }
+}

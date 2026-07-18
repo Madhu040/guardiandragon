@@ -1,0 +1,14 @@
+{
+  "id": "dlg_meadow_welcome",
+  "chapterId": "ch1",
+  "speaker": "Flicker",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "Welcome to Everbright Meadow! This signpost marks the start of our adventure. See the trail? It winds past the pond and up to the North Gate."
+    },
+    {
+      "text": "If you ever spot someone sitting alone, it's worth a closer look. A little kindness goes a long way out here."
+    }
+  ]
+}

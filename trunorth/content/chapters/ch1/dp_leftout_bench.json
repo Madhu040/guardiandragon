@@ -1,0 +1,48 @@
+{
+  "id": "dp_leftout_bench",
+  "prompt": "Jamie looks left out. What do you do?",
+  "inputMode": "both",
+  "themeSensitivity": "standard",
+  "selSkills": ["empathy", "friendship_repair"],
+  "options": [
+    {
+      "id": "opt_invite",
+      "label": "Hi Jamie — want to play with us? There's room for you.",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_sit",
+      "label": "Sit nearby quietly so Jamie doesn't feel alone.",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_ignore",
+      "label": "Keep playing and pretend you didn't notice.",
+      "selScore": "poor"
+    }
+  ],
+  "companionContext": {
+    "situation": "Child notices peer sitting alone at recess",
+    "npcEmotion": "lonely",
+    "ageBand": "5-7"
+  },
+  "consequences": [
+    { "band": "strong", "sceneId": "e2", "meterDeltas": { "empathy": 1.0, "friendship_repair": 0.5 } },
+    { "band": "partial", "sceneId": "e2", "meterDeltas": { "empathy": 0.4 } },
+    { "band": "poor", "sceneId": "e1", "repairAction": "offer-hand" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "noticing, uncertain",
+    "childStateExiting": {
+      "strong": "connected, proud of kindness",
+      "partial": "gentle, still learning",
+      "poor": "safe, guided to try again"
+    },
+    "companionStance": {
+      "strong": "warm glow, celebrating inclusion",
+      "partial": "soft encouragement",
+      "poor": "kneels close, no shame, opens repair"
+    },
+    "recoveryCadence": "poor → companion models invitation → child retries"
+  }
+}

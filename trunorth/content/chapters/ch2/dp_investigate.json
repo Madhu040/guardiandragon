@@ -1,0 +1,53 @@
+{
+  "id": "dp_investigate",
+  "prompt": "The bridge is blocked. How do you want to learn more?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["worry_brave", "calm"],
+  "options": [
+    {
+      "id": "opt_look",
+      "label": "👀 Look around",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_listen",
+      "label": "👂 Listen",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_check",
+      "label": "🪵 Check the bridge",
+      "selScore": "strong"
+    }
+  ],
+  "companionContext": {
+    "situation": "Singing Bridge creaking; Flicker alarmed; Wize invited careful looking",
+    "npcEmotion": "anxiety",
+    "ageBand": "8-10"
+  },
+  "consequences": [
+    {
+      "band": "strong",
+      "sceneId": "w3",
+      "fx": ["curiosity_glow"],
+      "meterDeltas": { "worry_brave": 0.35, "calm": 0.15 }
+    },
+    { "band": "partial", "sceneId": "w3", "meterDeltas": { "worry_brave": 0.15 } },
+    { "band": "poor", "sceneId": "w2", "repairAction": "offer-hand" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "startled, freeze response",
+    "childStateExiting": {
+      "strong": "curious, grounded",
+      "partial": "still looking",
+      "poor": "invited to try again"
+    },
+    "companionStance": {
+      "strong": "tail loosening, eyes softer",
+      "partial": "watching with player",
+      "poor": "clinging but held"
+    },
+    "recoveryCadence": "fear validated → investigate → facts grow"
+  }
+}

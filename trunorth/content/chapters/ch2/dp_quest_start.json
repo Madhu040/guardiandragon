@@ -1,0 +1,39 @@
+{
+  "id": "dp_quest_start",
+  "prompt": "Flicker stretches and grins: \"Good morning! Ready for today's adventure?\"",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["courage", "worry_brave"],
+  "options": [
+    {
+      "id": "opt_yes",
+      "label": "YES!",
+      "icon": "icon_spark",
+      "selScore": "strong"
+    }
+  ],
+  "companionContext": {
+    "situation": "Opening of The Singing Bridge — Shimmer Crystal quest begins in Everbright",
+    "npcEmotion": "excited",
+    "ageBand": "8-10"
+  },
+  "consequences": [
+    { "band": "strong", "sceneId": "w2", "meterDeltas": { "courage": 0.1 } },
+    { "band": "partial", "sceneId": "w2", "meterDeltas": { "courage": 0.05 } },
+    { "band": "poor", "sceneId": "w2" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "curious, playful",
+    "childStateExiting": {
+      "strong": "eager, motivated",
+      "partial": "warming up",
+      "poor": "still invited"
+    },
+    "companionStance": {
+      "strong": "cheerful spark",
+      "partial": "patient invitation",
+      "poor": "soft welcome"
+    },
+    "recoveryCadence": "adventure always begins with invitation"
+  }
+}

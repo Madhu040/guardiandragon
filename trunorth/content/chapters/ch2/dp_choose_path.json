@@ -1,0 +1,58 @@
+{
+  "id": "dp_choose_path",
+  "prompt": "Wize extends a wing. No answer is highlighted. What do you choose?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["courage", "worry_brave"],
+  "pivotLockMs": 2000,
+  "options": [
+    {
+      "id": "opt_go_back",
+      "label": "Go back",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_keep_going",
+      "label": "Keep going",
+      "selScore": "strong"
+    }
+  ],
+  "companionContext": {
+    "situation": "After looking and breathing, choose approach or retreat at the Singing Bridge",
+    "npcEmotion": "nervous hope",
+    "ageBand": "8-10"
+  },
+  "consequences": [
+    {
+      "band": "strong",
+      "sceneId": "w6",
+      "fx": ["first_step"],
+      "meterDeltas": { "courage": 0.5, "worry_brave": 0.35 }
+    },
+    {
+      "band": "partial",
+      "sceneId": "w5",
+      "repairAction": "offer-hand",
+      "meterDeltas": { "courage": 0.05 }
+    },
+    {
+      "band": "poor",
+      "sceneId": "w5",
+      "repairAction": "offer-hand"
+    }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "nervous and informed",
+    "childStateExiting": {
+      "strong": "committed, agency intact",
+      "partial": "agency preserved, gently invited forward",
+      "poor": "safe choice space"
+    },
+    "companionStance": {
+      "strong": "gripping backpack, willing",
+      "partial": "relieved then curious",
+      "poor": "staying close"
+    },
+    "recoveryCadence": "go back → Wize preserves agency → invite one careful step"
+  }
+}

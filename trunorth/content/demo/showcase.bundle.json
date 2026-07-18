@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "responses": {
+    "w1:dp_quest_start:strong": {
+      "scoreBand": "strong",
+      "skill": "courage",
+      "confidence": 1,
+      "companionLine": "YES! The Shimmer Crystal is waiting — let's go!",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w2:dp_investigate:strong": {
+      "scoreBand": "strong",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "Thank you for looking with me. Checking helps the scary stories get smaller.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w3:dp_fact_sort:strong": {
+      "scoreBand": "strong",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "You found the story! I tell LOTS of stories — but now we know which one wasn't a fact.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w3:dp_fact_sort:partial": {
+      "scoreBand": "partial",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "Hmm… that one might be a fact or a maybe. Which thought says WILL — like it's already decided?",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w4:dp_breathe:strong": {
+      "scoreBand": "strong",
+      "skill": "calm",
+      "confidence": 1,
+      "companionLine": "I still feel nervous… and my body feels softer. Thank you.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w4:dp_breathe:partial": {
+      "scoreBand": "partial",
+      "skill": "calm",
+      "confidence": 1,
+      "companionLine": "In… 2… 3… Out… Keep matching me.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w5:dp_choose_path:strong": {
+      "scoreBand": "strong",
+      "skill": "courage",
+      "confidence": 1,
+      "companionLine": "Okay… one careful step. I'm holding on — and I'm coming with you.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w5:dp_choose_path:partial": {
+      "scoreBand": "partial",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "We can always go back. But if we never cross, we'll never discover whether my worry was right this time. Want one careful step together?",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w6:dp_crossing:strong": {
+      "scoreBand": "strong",
+      "skill": "courage",
+      "confidence": 1,
+      "companionLine": "I thought we couldn't… but we did. Thank you for helping me.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w6:dp_crossing:partial": {
+      "scoreBand": "partial",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "Creak… we're doing it. One more plank!",
+      "redirect": false,
+      "safetyFlag": "none"
+    }
+  }
+}

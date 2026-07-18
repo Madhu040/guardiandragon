@@ -1,0 +1,19 @@
+{
+  "id": "w4",
+  "chapterId": "ch2",
+  "order": 4,
+  "movementTier": "A",
+  "background": "bg_bridge",
+  "gridMapId": "singing-bridge",
+  "narration": "Flicker's heart still races — thinking alone doesn't erase worry. Help Flicker's body: match five slow breaths. In… 2… 3… Out… 2… 3…",
+  "characters": [
+    { "assetRef": "char_wize", "id": "companion", "position": [640, 760], "expression": "calm" },
+    { "assetRef": "char_avatar", "id": "avatar", "position": [440, 800], "expression": "calm" },
+    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "worried", "solidSize": [190, 80] }
+  ],
+  "triggers": [
+    { "id": "breathe_trigger", "bounds": [520, 640, 280, 220], "action": "startDecision", "target": "dp_breathe" }
+  ],
+  "collectibles": [],
+  "decisionPoints": ["dp_breathe"]
+}

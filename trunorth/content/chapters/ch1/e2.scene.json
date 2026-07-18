@@ -1,0 +1,30 @@
+{
+  "id": "e2",
+  "chapterId": "ch1",
+  "order": 2,
+  "movementTier": "A",
+  "background": "bg_meadow",
+  "gridMapId": "everbright-meadow",
+  "narration": "The rabbit friend smiles a little. Friendship in the meadow starts with one kind invitation.",
+  "characters": [
+    { "assetRef": "char_leftout", "id": "leftout", "position": [960, 740], "expression": "happy" },
+    { "assetRef": "char_companion_dragon", "id": "companion", "position": [700, 780], "expression": "glow" },
+    { "assetRef": "char_avatar", "id": "avatar", "position": [820, 800], "expression": "happy" }
+  ],
+  "triggers": [],
+  "collectibles": [
+    { "id": "spark_e2", "assetRef": "collectible_spark", "position": [400, 800], "kind": "kindness_spark" }
+  ],
+  "objects": [
+    {
+      "id": "obj_meadow_gate",
+      "cell": [42, 7],
+      "assetRef": "finish_flag",
+      "label": "North Gate",
+      "hint": "Press E to continue",
+      "interaction": { "kind": "finish", "mode": "advance" }
+    }
+  ],
+  "decisionPoints": [],
+  "nextSceneId": "e3"
+}
