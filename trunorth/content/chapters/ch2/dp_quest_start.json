@@ -1,39 +1,63 @@
 {
   "id": "dp_quest_start",
-  "prompt": "Flicker stretches and grins: \"Good morning! Ready for today's adventure?\"",
+  "prompt": "Flicker frets: \"What if something terrible happens?\" Nova still wants the Sky Festival. Ready to begin the Star Crystal quest \u2014 with Flicker along?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["courage", "worry_brave"],
+  "selSkills": [
+    "courage",
+    "worry_brave"
+  ],
   "options": [
     {
       "id": "opt_yes",
-      "label": "YES!",
+      "label": "Yes \u2014 let's go together!",
       "icon": "icon_spark",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_listen",
+      "label": "First tell Flicker: I hear you",
       "selScore": "strong"
     }
   ],
   "companionContext": {
-    "situation": "Opening of The Singing Bridge — Shimmer Crystal quest begins in Everbright",
-    "npcEmotion": "excited",
-    "ageBand": "8-10"
+    "situation": "Opening of The Little Dragon Who Wouldn't Stop Guarding \u2014 Nova seeks Star Crystals for the Sky Festival while Flicker sounds alarms",
+    "npcEmotion": "worried-hopeful",
+    "ageBand": "5-7"
   },
   "consequences": [
-    { "band": "strong", "sceneId": "w2", "meterDeltas": { "courage": 0.1 } },
-    { "band": "partial", "sceneId": "w2", "meterDeltas": { "courage": 0.05 } },
-    { "band": "poor", "sceneId": "w2" }
+    {
+      "band": "strong",
+      "sceneId": "w2",
+      "meterDeltas": {
+        "courage": 0.15,
+        "worry_brave": 0.1
+      }
+    },
+    {
+      "band": "partial",
+      "sceneId": "w2",
+      "meterDeltas": {
+        "courage": 0.05
+      }
+    },
+    {
+      "band": "poor",
+      "sceneId": "w2"
+    }
   ],
   "emotionalArc": {
-    "childStateEntering": "curious, playful",
+    "childStateEntering": "excited and a little unsure",
     "childStateExiting": {
-      "strong": "eager, motivated",
+      "strong": "eager, accompanied",
       "partial": "warming up",
       "poor": "still invited"
     },
     "companionStance": {
-      "strong": "cheerful spark",
-      "partial": "patient invitation",
+      "strong": "worried but included",
+      "partial": "listening",
       "poor": "soft welcome"
     },
-    "recoveryCadence": "adventure always begins with invitation"
+    "recoveryCadence": "adventure begins by inviting the protector along"
   }
 }

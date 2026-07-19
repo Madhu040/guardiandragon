@@ -1,19 +1,21 @@
 {
   "id": "w5",
-  "chapterId": "ch2",
+  "chapterId": "ch3",
   "order": 5,
   "movementTier": "B",
-  "background": "bg_bridge",
-  "gridMapId": "singing-bridge",
-  "narration": "Flicker still feels nervous. Wize softly says: \"Feeling nervous isn't a stop sign — it's your dragon asking you to pay attention. We've looked carefully. We've helped your body. Now… we choose.\"",
+  "background": "bg_cave",
+  "gridMapId": "cave-of-purpose",
+  "narration": "Cave of Purpose. Glowing memories show Flicker warning about cliffs, storms, and real danger. Nova realizes: Flicker isn't broken — Flicker has a job. The hard part is telling danger from possibility. Thank Flicker.",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [600, 760], "expression": "calm" },
+    { "assetRef": "char_wize", "id": "companion", "position": [960, 700], "expression": "calm" },
     { "assetRef": "char_avatar", "id": "avatar", "position": [420, 800], "expression": "neutral" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "worried", "solidSize": [190, 80] }
+    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [600, 760], "expression": "worried", "solidSize": [190, 80] }
   ],
   "triggers": [
-    { "id": "choose_trigger", "bounds": [400, 620, 600, 260], "action": "startDecision", "target": "dp_choose_path" }
+    { "id": "purpose_trigger", "bounds": [400, 620, 600, 260], "action": "startDecision", "target": "dp_choose_path" }
   ],
-  "collectibles": [],
+  "collectibles": [
+    { "id": "spark_cave", "assetRef": "collectible_spark", "position": [240, 780], "kind": "kindness_spark" }
+  ],
   "decisionPoints": ["dp_choose_path"]
 }

@@ -6,17 +6,17 @@ const DISCUSS_PROMPTS: Record<string, string> = {
   dp_ask_grownup:
     "When is it okay to ask a grown-up for help? Share a time you asked for help together.",
   dp_quest_start:
-    "Flicker wants an adventure to the Shimmer Crystal. What are you looking forward to in today's journey?",
+    "Nova wants Star Crystals for the Sky Festival. Flicker is worried. What helps when someone you love frets and you still want to try?",
   dp_investigate:
-    "The bridge squeaks and Flicker panics. What is one thing you could look at or listen for before deciding it's dangerous?",
+    "Flicker says \"What if we get lost?\" Practice one curious question you could ask a worry at home.",
   dp_fact_sort:
-    "Which thoughts are facts, which are maybes, and which are scary stories? Sort one family worry the same way.",
+    "A worry looked huge until Nova inspected it. When have you looked closer at a scary thought and found it smaller?",
   dp_breathe:
-    "Flicker's body is still scared even after thinking. What helps your body calm down when worry buzzes?",
+    "Flicker felt left out. What is one kind way you welcome a worried feeling instead of pushing it away?",
   dp_choose_path:
-    "Feeling nervous isn't a stop sign. When have you felt scared and still taken a careful next step?",
+    "Flicker isn't broken — Flicker has a purpose. Share one time worry actually kept someone safer.",
   dp_crossing:
-    "You crossed while still nervous. What does a Courage Feather mean — being fearless, or walking with courage?",
+    "They felt scared and still stepped on stage. What does courage mean — zero fear, or going together anyway?",
   dp_hothead_calm:
     "In the Forest of Questions, murky feelings cloud the water. What helps your body calm down when you feel that way?",
   dp_friendship_repair:

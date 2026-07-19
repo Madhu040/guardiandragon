@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { GridMap, gridCellToWorld } from "../../src/engine/GridMap.js";
 import { getGridLevel } from "../../src/content/gridLevels.js";
-import { DIALOGS, SCENES, getDialog, getScene } from "../../src/content/index.js";
+import { DIALOGS, SCENES, CHAPTER_COMPLETE_DECISION, getDialog, getScene } from "../../src/content/index.js";
 import { objectSprite, objectWorldPos, sceneObjects } from "../../src/content/stageObjects.js";
 import { SceneEngine, type EngineCallbacks } from "../../src/engine/SceneEngine.js";
 import { createInitialGameState } from "../../src/config/gameState.js";
@@ -99,14 +99,22 @@ describe("stage object content integrity", () => {
     }
   });
 
-  it("completes ch2 by walking to the w7 checkmark after dp_crossing", () => {
-    // dp_crossing no longer ends the chapter — its strong band leads to w7…
+  it("completes Little Dragon across three phases", () => {
+    expect(getScene("w3")!.chapterId).toBe("ch2");
+    expect(getScene("w5")!.chapterId).toBe("ch3");
+    expect(getScene("w6")!.chapterId).toBe("ch4");
+    expect(getScene("w7")!.chapterId).toBe("ch4");
+
+    // Phases 1–2 complete on strong decisions; phase 3 walks to the w7 checkmark.
+    expect(CHAPTER_COMPLETE_DECISION.ch2).toBe("dp_fact_sort");
+    expect(CHAPTER_COMPLETE_DECISION.ch3).toBe("dp_choose_path");
+    expect(CHAPTER_COMPLETE_DECISION.ch4).toBeUndefined();
+
     const w6 = getScene("w6")!;
     expect(w6.nextSceneId).toBe("w7");
 
-    // …where the only finish/complete object in ch2 waits across the bridge.
     const completes = Object.values(SCENES)
-      .filter((s) => s.chapterId === "ch2")
+      .filter((s) => s.chapterId === "ch4")
       .flatMap((s) =>
         sceneObjects(s)
           .filter((o) => o.interaction.kind === "finish" && o.interaction.mode === "complete")

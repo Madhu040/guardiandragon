@@ -1,18 +1,19 @@
 {
   "id": "w4",
-  "chapterId": "ch2",
+  "chapterId": "ch3",
   "order": 4,
-  "movementTier": "A",
-  "background": "bg_bridge",
-  "gridMapId": "singing-bridge",
-  "narration": "Flicker's heart still races — thinking alone doesn't erase worry. Help Flicker's body: match five slow breaths. In… 2… 3… Out… 2… 3…",
+  "movementTier": "B",
+  "background": "bg_meadow",
+  "gridMapId": "meadow-of-curiosity",
+  "narration": "Valley of Welcome. Other creatures pushed their Guardian Dragons away — the dragons sit gray and sad on distant hills. Flicker still follows Nova. The Turtle Sage says: \"Guardians don't leave, because they care too much. Invite them beside you.\"",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [640, 760], "expression": "calm" },
+    { "assetRef": "char_wize", "id": "companion", "position": [1040, 720], "expression": "calm" },
     { "assetRef": "char_avatar", "id": "avatar", "position": [440, 800], "expression": "calm" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "worried", "solidSize": [190, 80] }
+    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [780, 760], "expression": "worried", "solidSize": [190, 80] },
+    { "assetRef": "char_helper_deer", "id": "helper_deer", "position": [1160, 780], "expression": "calm" }
   ],
   "triggers": [
-    { "id": "breathe_trigger", "bounds": [520, 640, 280, 220], "action": "startDecision", "target": "dp_breathe" }
+    { "id": "welcome_trigger", "bounds": [400, 620, 520, 260], "action": "startDecision", "target": "dp_breathe" }
   ],
   "collectibles": [],
   "decisionPoints": ["dp_breathe"]

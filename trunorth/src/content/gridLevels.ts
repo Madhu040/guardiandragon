@@ -106,9 +106,144 @@ function buildSingingBridge(): GridLevel {
   return { id: "singing-bridge", name: "The Singing Bridge", spawnCell: [50, 85], map };
 }
 
+/** Forest of Questions — a mossy clearing with a winding path through the trees. */
+function buildForestOfQuestions(): GridLevel {
+  const moss = "#3f7a4c";
+  const mossDark = "#356a41";
+  const trees = "#254a30";
+  const path = "#8a9b6e";
+  const glade = "#5a9a68";
+
+  const map = new GridMap({ color: moss, walkable: true });
+
+  map
+    .paintEllipse(30, 40, 10, 7, { color: mossDark })
+    .paintEllipse(65, 65, 11, 8, { color: mossDark })
+    .paintEllipse(20, 75, 8, 6, { color: mossDark });
+
+  // Curious little glades where questions get asked
+  map
+    .paintEllipse(75, 30, 6, 5, { color: glade })
+    .paintEllipse(35, 20, 5, 4, { color: glade });
+
+  map.paintBorder(4, { color: trees, walkable: false });
+
+  // Winding dirt path from spawn (south) up to the north gate
+  map
+    .paintRect(46, 60, 10, 30, { color: path })
+    .paintRect(30, 52, 26, 10, { color: path })
+    .paintRect(30, 20, 10, 34, { color: path })
+    .paintRect(30, 4, 10, 18, { color: path, walkable: true });
+
+  return { id: "forest-of-questions", name: "Forest of Questions", spawnCell: [50, 85], map };
+}
+
+/** Meadow of Curiosity — a field of giant worry-flowers that shrink under a curious look. */
+function buildMeadowOfCuriosity(): GridLevel {
+  const grass = "#6ab04c";
+  const grassDark = "#5da043";
+  const hedge = "#2f6b3a";
+  const flowerBig = "#c56cd6";
+  const flowerBigRim = "#a854b8";
+  const flowerSmall = "#e8a6f0";
+  const path = "#d9c48a";
+
+  const map = new GridMap({ color: grass, walkable: true });
+
+  map
+    .paintEllipse(25, 30, 10, 7, { color: grassDark })
+    .paintEllipse(75, 60, 12, 8, { color: grassDark });
+
+  map.paintBorder(3, { color: hedge, walkable: false });
+
+  // Giant worry-flowers — some huge, some tiny, decorative (walkable around, not on top)
+  map
+    .paintEllipse(70, 25, 9, 7, { color: flowerBigRim, walkable: false })
+    .paintEllipse(70, 25, 6, 5, { color: flowerBig, walkable: false })
+    .paintEllipse(22, 60, 4, 3, { color: flowerSmall, walkable: false })
+    .paintEllipse(45, 78, 3, 2, { color: flowerSmall, walkable: false });
+
+  // Path from spawn to the far welcome gate
+  map
+    .paintRect(46, 55, 8, 35, { color: path })
+    .paintRect(40, 6, 20, 12, { color: path, walkable: true });
+
+  return { id: "meadow-of-curiosity", name: "Meadow of Curiosity", spawnCell: [50, 85], map };
+}
+
+/** Cave of Purpose — glowing memory-crystals line a quiet stone chamber. */
+function buildCaveOfPurpose(): GridLevel {
+  const stone = "#4a4f5c";
+  const stoneDark = "#3c4049";
+  const wall = "#26282f";
+  const crystal = "#7fd8e0";
+  const crystalGlow = "#a6ecf2";
+
+  const map = new GridMap({ color: stone, walkable: true });
+
+  map
+    .paintEllipse(30, 35, 9, 7, { color: stoneDark })
+    .paintEllipse(70, 55, 10, 8, { color: stoneDark })
+    .paintEllipse(45, 70, 7, 5, { color: stoneDark });
+
+  map.paintBorder(5, { color: wall, walkable: false });
+
+  // Rock pillars
+  map
+    .paintRect(18, 20, 6, 6, { color: wall, walkable: false })
+    .paintRect(76, 24, 6, 6, { color: wall, walkable: false })
+    .paintRect(20, 68, 5, 5, { color: wall, walkable: false });
+
+  // Glowing memory-crystal veins
+  map
+    .paintEllipse(35, 45, 3, 5, { color: crystalGlow, walkable: false })
+    .paintEllipse(35, 45, 2, 3, { color: crystal, walkable: false })
+    .paintEllipse(65, 30, 3, 4, { color: crystalGlow, walkable: false })
+    .paintEllipse(65, 30, 2, 2, { color: crystal, walkable: false });
+
+  return { id: "cave-of-purpose", name: "Cave of Purpose", spawnCell: [50, 85], map };
+}
+
+/** Mountain of Helpers — a switchback climb up to the Sky Festival stage. */
+function buildMountainFestival(): GridLevel {
+  const rockLow = "#6b6f7a";
+  const rockHigh = "#5a5e68";
+  const cliff = "#454954";
+  const path = "#c9b389";
+  const stage = "#e0b84d";
+  const stageRim = "#b8933a";
+  const sky = "#8fb8d6";
+
+  const map = new GridMap({ color: rockLow, walkable: true });
+
+  map.paintRect(0, 0, GRID_COLS, 22, { color: sky, walkable: false });
+  map.paintRect(0, 22, GRID_COLS, 30, { color: rockHigh });
+
+  map.paintBorder(4, { color: cliff, walkable: false });
+
+  // Switchback path climbing from spawn (south) to the festival stage (north)
+  map
+    .paintRect(44, 74, 10, 20, { color: path })
+    .paintRect(20, 64, 34, 10, { color: path })
+    .paintRect(20, 40, 10, 24, { color: path })
+    .paintRect(20, 34, 42, 8, { color: path })
+    .paintRect(52, 22, 10, 20, { color: path });
+
+  // Festival stage platform at the top of the climb
+  map
+    .paintRect(38, 8, 24, 16, { color: stageRim, walkable: true })
+    .paintRect(40, 10, 20, 12, { color: stage, walkable: true });
+
+  return { id: "mountain-festival", name: "Mountain of Helpers", spawnCell: [50, 90], map };
+}
+
 const LEVEL_BUILDERS: Record<string, () => GridLevel> = {
   "everbright-meadow": buildEverbrightMeadow,
   "singing-bridge": buildSingingBridge,
+  "forest-of-questions": buildForestOfQuestions,
+  "meadow-of-curiosity": buildMeadowOfCuriosity,
+  "cave-of-purpose": buildCaveOfPurpose,
+  "mountain-festival": buildMountainFestival,
 };
 
 const levelCache = new Map<string, GridLevel>();

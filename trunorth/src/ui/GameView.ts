@@ -9,6 +9,7 @@ import { isGridDebug, resolveGridLevel } from "../content/gridLevels.js";
 import { renderGridBackground } from "../render/gridBackground.js";
 import { contentConfig } from "../config/content.js";
 import { isSpeechSupported, isVoiceEnabled, setVoiceEnabled, speakLine, stopSpeaking } from "../audio/speech.js";
+import { COLOR_TUNES, type TogetherPlayer } from "../together/inviteStore.js";
 
 export interface CounselorPanelData {
   title: string;
@@ -44,6 +45,7 @@ export function renderGameView(
   dialogState: DialogViewState | null = null,
   onDialogNext?: () => void,
   onDialogClose?: () => void,
+  togetherPlayers: TogetherPlayer[] = [],
 ): void {
   container.innerHTML = "";
 
@@ -67,6 +69,22 @@ export function renderGameView(
     togetherPill.className = "together-pill";
     togetherPill.textContent = "Playing Together";
     viewport.appendChild(togetherPill);
+
+    if (togetherPlayers.length > 0) {
+      const badges = document.createElement("div");
+      badges.className = "together-player-badges";
+      badges.setAttribute("aria-label", "Players");
+      for (const player of togetherPlayers) {
+        const badge = document.createElement("div");
+        badge.className = "together-player-badge";
+        badge.style.setProperty("--player-accent", COLOR_TUNES[player.colorTune].accent);
+        badge.style.setProperty("--player-soft", COLOR_TUNES[player.colorTune].soft);
+        const role = player.role === "parent" ? "Parent" : "Child";
+        badge.innerHTML = `<span class="badge-dot"></span><span class="badge-name">${escapeText(player.displayName)}</span><span class="badge-role">${role}</span>`;
+        badges.appendChild(badge);
+      }
+      viewport.appendChild(badges);
+    }
   }
 
   const brownie = document.createElement("div");
@@ -175,7 +193,7 @@ export function renderGameView(
         ch.id === "companion"
           ? companionName
           : ch.id === "avatar"
-            ? "You"
+            ? state.profile.childDisplayName || "You"
             : ch.id === "wize"
               ? "Wize"
               : ch.id === "leftout"

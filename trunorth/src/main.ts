@@ -24,6 +24,21 @@ import {
   renderScenarioHub,
   renderCheckin,
 } from "./ui/screens.js";
+import {
+  renderTogetherLobby,
+  renderTogetherPlayerSetup,
+  renderTogetherWaiting,
+  type PlayerSetupResult,
+} from "./ui/togetherScreens.js";
+import {
+  createRoom,
+  joinRoom,
+  loadRoom,
+  parseInviteFromUrl,
+  type TogetherPlayer,
+  type TogetherRole,
+  type TogetherRoom,
+} from "./together/inviteStore.js";
 import { getToken } from "./ui/auth.js";
 import { speakLine, stopSpeaking } from "./audio/speech.js";
 import { buildJourneyReflection } from "./counselor/insights.js";
@@ -40,7 +55,10 @@ type AppScreen =
   | "celebration"
   | "reflection"
   | "login"
-  | "register";
+  | "register"
+  | "togetherLobby"
+  | "togetherSetup"
+  | "togetherWaiting";
 
 const demoMode = isDemoMode();
 const API_URL = appConfig.apiUrl;
@@ -59,6 +77,14 @@ let pendingScenario: ScenarioMeta | null = null;
 let pendingPlayMode: "solo" | "together" = "solo";
 let activeDialog: DialogViewState | null = null;
 
+/** Play Together invite session (cross-device, via the API). */
+let togetherRoom: TogetherRoom | null = null;
+let togetherPlayers: TogetherPlayer[] = [];
+let togetherSetupRole: TogetherRole = "parent";
+let togetherSetupMode: "host" | "join" = "host";
+let togetherJoinCode: string | null = null;
+let stopTogetherWatch: (() => void) | null = null;
+
 const app = document.getElementById("app")!;
 
 function navigate(screen: AppScreen): void {
@@ -67,8 +93,78 @@ function navigate(screen: AppScreen): void {
     stopSpeaking();
     activeDialog = null;
   }
+  if (screen !== "togetherWaiting") {
+    stopTogetherWatch?.();
+    stopTogetherWatch = null;
+  }
   currentScreen = screen;
   render();
+}
+
+function applyTogetherToProfile(players: TogetherPlayer[]): void {
+  togetherPlayers = players;
+  const child = players.find((p) => p.role === "child") ?? players[0];
+  if (child) {
+    gameState.profile.childDisplayName = child.displayName;
+    const hair = gameState.profile.avatar?.hair ?? "hair_curly";
+    gameState.profile.avatar = {
+      skinTone: child.skinTone,
+      hair,
+    };
+    if (child.characterId.startsWith("companion_")) {
+      gameState.profile.companionArchetype = child.characterId;
+      gameState.profile.companionName = child.displayName;
+    }
+  }
+}
+
+async function finishHostSetup(result: PlayerSetupResult): Promise<void> {
+  try {
+    const created = await createRoom(result);
+    if (!created.ok) {
+      throw new Error(created.error);
+    }
+    if (!created.room?.code) {
+      throw new Error("Invite was created but no code came back. Try again.");
+    }
+    togetherRoom = created.room;
+    applyTogetherToProfile(created.room.players);
+    navigate("togetherWaiting");
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Could not create invite.";
+    console.error("finishHostSetup", err);
+    alert(message);
+    throw err instanceof Error ? err : new Error(message);
+  }
+}
+
+async function finishJoinSetup(result: PlayerSetupResult): Promise<void> {
+  try {
+    const code = togetherJoinCode;
+    if (!code) {
+      navigate("togetherLobby");
+      return;
+    }
+    const joined = await joinRoom(code, result);
+    if (!joined.ok) {
+      throw new Error(joined.error);
+    }
+    togetherRoom = joined.room;
+    applyTogetherToProfile(joined.room.players);
+    navigate("togetherWaiting");
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Could not join invite.";
+    console.error("finishJoinSetup", err);
+    alert(message);
+    throw err instanceof Error ? err : new Error(message);
+  }
+}
+
+function enterTogetherReady(room: TogetherRoom): void {
+  togetherRoom = room;
+  applyTogetherToProfile(room.players);
+  gameState.flags.playMode = "together";
+  navigate("hub");
 }
 
 function beginEncounter(target: string): void {
@@ -239,6 +335,7 @@ function renderGame(): void {
       }
     },
     closeDialog,
+    togetherPlayers,
   );
 }
 
@@ -267,11 +364,76 @@ function render(): void {
             navigate("trust");
           } else if (!gameState.flags.onboardingComplete) {
             navigate("onboarding");
+          } else if (appConfig.features.togetherMode) {
+            navigate("togetherLobby");
           } else {
             navigate("hub");
           }
         },
         (s) => navigate(s),
+      );
+      break;
+
+    case "togetherLobby":
+      renderTogetherLobby(
+        app,
+        (role) => {
+          togetherSetupRole = role;
+          togetherSetupMode = "host";
+          togetherJoinCode = null;
+          navigate("togetherSetup");
+        },
+        (code) => {
+          void (async () => {
+            const room = await loadRoom(code);
+            if (!room) {
+              alert("Invite not found or expired. Ask for a fresh code, and make sure the API is running.");
+              return;
+            }
+            const taken = new Set(room.players.map((p) => p.role));
+            const openRole: TogetherRole | null =
+              !taken.has("parent") ? "parent" : !taken.has("child") ? "child" : null;
+            if (!openRole) {
+              alert("This invite is already full.");
+              return;
+            }
+            togetherJoinCode = code;
+            togetherSetupRole = openRole;
+            togetherSetupMode = "join";
+            navigate("togetherSetup");
+          })();
+        },
+        () => navigate("landing"),
+      );
+      break;
+
+    case "togetherSetup":
+      renderTogetherPlayerSetup(
+        app,
+        togetherSetupRole,
+        togetherSetupMode,
+        (result) => {
+          if (togetherSetupMode === "host") return finishHostSetup(result);
+          return finishJoinSetup(result);
+        },
+        () => navigate("togetherLobby"),
+      );
+      break;
+
+    case "togetherWaiting":
+      if (!togetherRoom) {
+        navigate("togetherLobby");
+        break;
+      }
+      stopTogetherWatch = renderTogetherWaiting(
+        app,
+        togetherRoom,
+        (room) => enterTogetherReady(room),
+        () => {
+          togetherRoom = null;
+          togetherPlayers = [];
+          navigate("togetherLobby");
+        },
       );
       break;
 
@@ -395,6 +557,13 @@ void (async () => {
       gameState.flags.playMode = "solo";
     }
   }
+
+  const invite = parseInviteFromUrl();
+  if (invite && appConfig.features.togetherMode) {
+    gameState.flags.playMode = "together";
+    currentScreen = "togetherLobby";
+  }
+
   render();
 })();
 

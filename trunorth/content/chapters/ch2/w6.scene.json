@@ -1,18 +1,18 @@
 {
   "id": "w6",
-  "chapterId": "ch2",
+  "chapterId": "ch4",
   "order": 6,
   "movementTier": "A",
-  "background": "bg_bridge",
-  "gridMapId": "singing-bridge",
-  "narration": "One plank at a time. The bridge creaks… and holds. Take careful steps with Flicker until you cross — courage grows from action.",
+  "background": "bg_mountain",
+  "gridMapId": "mountain-festival",
+  "narration": "Mountain of Helpers & the Sky Festival. Flicker's alarms are loudest here. Comfort Flicker, then take the stage one step at a time — nervous feelings can come along. Courage means going together, not feeling zero fear.",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [700, 760], "expression": "happy" },
+    { "assetRef": "char_wize", "id": "companion", "position": [1040, 700], "expression": "happy" },
     { "assetRef": "char_avatar", "id": "avatar", "position": [520, 800], "expression": "neutral" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "worried", "solidSize": [190, 80] }
+    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [700, 760], "expression": "worried", "solidSize": [190, 80] }
   ],
   "triggers": [
-    { "id": "crossing_trigger", "bounds": [480, 600, 480, 280], "action": "startDecision", "target": "dp_crossing" }
+    { "id": "festival_trigger", "bounds": [440, 600, 520, 280], "action": "startDecision", "target": "dp_crossing" }
   ],
   "collectibles": [],
   "decisionPoints": ["dp_crossing"],

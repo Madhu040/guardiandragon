@@ -1,42 +1,78 @@
 {
   "id": "dp_crossing",
-  "prompt": "Cross together — one careful plank at a time.",
+  "prompt": "Sky Festival stage ahead. Flicker shakes. Nova shakes. Take the feeling with you \u2014 one step at a time.",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["courage", "worry_brave"],
+  "selSkills": [
+    "courage",
+    "worry_brave"
+  ],
   "options": [
-    { "id": "plank_1", "label": "First plank — creak…", "selScore": "partial" },
-    { "id": "plank_2", "label": "Second plank — still holding", "selScore": "partial" },
-    { "id": "plank_3", "label": "Halfway — \"…we're doing it.\"", "selScore": "partial" },
-    { "id": "plank_4", "label": "One more step — cross!", "selScore": "strong" }
+    {
+      "id": "step_1",
+      "label": "Step 1 \u2014 \"We can do hard things together\"",
+      "selScore": "partial"
+    },
+    {
+      "id": "step_2",
+      "label": "Step 2 \u2014 \"You don't have to do this alone\"",
+      "selScore": "partial"
+    },
+    {
+      "id": "step_3",
+      "label": "Step 3 \u2014 Stand on stage with Flicker",
+      "selScore": "partial"
+    },
+    {
+      "id": "step_4",
+      "label": "Step 4 \u2014 Perform anyway \u2b50",
+      "selScore": "strong"
+    }
   ],
   "companionContext": {
-    "situation": "Crossing the Singing Bridge while still feeling nervous; exposure with support",
+    "situation": "Mountain of Helpers + Sky Festival \u2014 comfort Flicker then take exposure steps while nervous; reward bravery not fearlessness",
     "npcEmotion": "brave-while-scared",
-    "ageBand": "8-10"
+    "ageBand": "5-7"
   },
   "consequences": [
     {
       "band": "strong",
       "sceneId": "w7",
-      "fx": ["celebration", "courage_feather"],
-      "meterDeltas": { "courage": 1.0, "worry_brave": 0.75, "self_worth": 0.35 }
+      "fx": [
+        "celebration",
+        "courage_feather"
+      ],
+      "meterDeltas": {
+        "courage": 1.0,
+        "worry_brave": 0.75,
+        "self_worth": 0.4
+      }
     },
-    { "band": "partial", "sceneId": "w6", "meterDeltas": { "courage": 0.2 } },
-    { "band": "poor", "sceneId": "w6", "repairAction": "tap-kind-action" }
+    {
+      "band": "partial",
+      "sceneId": "w6",
+      "meterDeltas": {
+        "courage": 0.2
+      }
+    },
+    {
+      "band": "poor",
+      "sceneId": "w6",
+      "repairAction": "tap-kind-action"
+    }
   ],
   "emotionalArc": {
-    "childStateEntering": "nervous, choosing approach",
+    "childStateEntering": "nervous at the summit and stage",
     "childStateExiting": {
-      "strong": "proud, tearfully joyful",
-      "partial": "mid-bridge, progressing",
+      "strong": "proud \u2014 scared and still going",
+      "partial": "mid-steps, progressing",
       "poor": "supported to continue"
     },
     "companionStance": {
-      "strong": "\"I thought we couldn't… but we did.\"",
-      "partial": "peeking, whispering",
+      "strong": "confident dragon beside Nova",
+      "partial": "shaking but walking",
       "poor": "held close"
     },
-    "recoveryCadence": "cross while anxious → Courage Feather for walking with courage"
+    "recoveryCadence": "Flicker was worried. Nova listened. They walked together. Courage +10 \u2014 worry may remain."
   }
 }

@@ -11,12 +11,14 @@ export default defineConfig(({ mode }) => {
       alias: { "@": resolve(__dirname, "src") },
     },
     server: {
+      host: true, // expose on LAN so phones can open http://<your-ip>:5173
       port: clientPort,
       proxy: {
         "/api": { target: apiProxyTarget, changeOrigin: true },
       },
     },
     preview: {
+      host: true,
       port: Number(env.VITE_PREVIEW_PORT || 4173),
     },
     build: {

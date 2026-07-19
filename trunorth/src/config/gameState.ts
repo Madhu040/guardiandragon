@@ -8,6 +8,7 @@ export function createInitialGameState(demoMode = false): GameState {
   return {
     version: 1,
     profile: {
+      childDisplayName: "Nova",
       ageBand: defaults.ageBand,
       chapterId: defaults.chapterId,
       avatar: { skinTone: "tone_3", hair: "hair_curly" },
@@ -17,7 +18,7 @@ export function createInitialGameState(demoMode = false): GameState {
     },
     progress: {
       currentSceneId: defaults.startSceneId,
-      chaptersUnlocked: ["ch1", "ch2"],
+      chaptersUnlocked: ["ch1", "ch2", "ch3", "ch4"],
       chaptersCompleted: [],
       browniePoints: 0,
       kindnessSparksFound: {},

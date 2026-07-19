@@ -1,53 +1,72 @@
 {
   "id": "dp_investigate",
-  "prompt": "The bridge is blocked. How do you want to learn more?",
+  "prompt": "Flicker says: \"What if we get lost?\" Use a Question Feather. Which curiosity question do you ask?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["worry_brave", "calm"],
+  "selSkills": [
+    "worry_brave",
+    "calm"
+  ],
   "options": [
     {
-      "id": "opt_look",
-      "label": "👀 Look around",
+      "id": "opt_think",
+      "label": "\u2b50 What makes you think that?",
       "selScore": "strong"
     },
     {
-      "id": "opt_listen",
-      "label": "👂 Listen",
+      "id": "opt_before",
+      "label": "\u2b50 Has this happened before?",
       "selScore": "strong"
     },
     {
-      "id": "opt_check",
-      "label": "🪵 Check the bridge",
+      "id": "opt_help",
+      "label": "\u2b50 What would help us if it did?",
       "selScore": "strong"
     }
   ],
   "companionContext": {
-    "situation": "Singing Bridge creaking; Flicker alarmed; Wize invited careful looking",
+    "situation": "Forest of Questions \u2014 Flicker blocks the path with lost-worry; Nova uses curiosity questions to shrink dark clouds",
     "npcEmotion": "anxiety",
-    "ageBand": "8-10"
+    "ageBand": "5-7"
   },
   "consequences": [
     {
       "band": "strong",
       "sceneId": "w3",
-      "fx": ["curiosity_glow"],
-      "meterDeltas": { "worry_brave": 0.35, "calm": 0.15 }
+      "fx": [
+        "curiosity_glow",
+        "worry_cloud_shrink"
+      ],
+      "meterDeltas": {
+        "worry_brave": 0.4,
+        "calm": 0.15
+      }
     },
-    { "band": "partial", "sceneId": "w3", "meterDeltas": { "worry_brave": 0.15 } },
-    { "band": "poor", "sceneId": "w2", "repairAction": "offer-hand" }
+    {
+      "band": "partial",
+      "sceneId": "w3",
+      "meterDeltas": {
+        "worry_brave": 0.15
+      }
+    },
+    {
+      "band": "poor",
+      "sceneId": "w2",
+      "repairAction": "offer-hand"
+    }
   ],
   "emotionalArc": {
-    "childStateEntering": "startled, freeze response",
+    "childStateEntering": "blocked by worry",
     "childStateExiting": {
-      "strong": "curious, grounded",
-      "partial": "still looking",
+      "strong": "curious, connected",
+      "partial": "still asking",
       "poor": "invited to try again"
     },
     "companionStance": {
-      "strong": "tail loosening, eyes softer",
-      "partial": "watching with player",
-      "poor": "clinging but held"
+      "strong": "clouds smaller, feels heard",
+      "partial": "opening up",
+      "poor": "still guarding"
     },
-    "recoveryCadence": "fear validated → investigate → facts grow"
+    "recoveryCadence": "anxiety quiets when it feels heard \u2014 not when it disappears"
   }
 }

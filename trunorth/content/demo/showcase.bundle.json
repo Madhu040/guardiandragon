@@ -5,7 +5,7 @@
       "scoreBand": "strong",
       "skill": "courage",
       "confidence": 1,
-      "companionLine": "YES! The Shimmer Crystal is waiting — let's go!",
+      "companionLine": "Yes! Star Crystals and the Sky Festival — I'll come with you, even if I'm worried.",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -13,7 +13,7 @@
       "scoreBand": "strong",
       "skill": "worry_brave",
       "confidence": 1,
-      "companionLine": "Thank you for looking with me. Checking helps the scary stories get smaller.",
+      "companionLine": "Asking that helped. I don't actually know if we'll get lost… the clouds feel smaller.",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -21,7 +21,7 @@
       "scoreBand": "strong",
       "skill": "worry_brave",
       "confidence": 1,
-      "companionLine": "You found the story! I tell LOTS of stories — but now we know which one wasn't a fact.",
+      "companionLine": "Whoa — the huge flower was just a tiny nervous one. Looking carefully helped!",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -29,15 +29,23 @@
       "scoreBand": "partial",
       "skill": "worry_brave",
       "confidence": 1,
-      "companionLine": "Hmm… that one might be a fact or a maybe. Which thought says WILL — like it's already decided?",
+      "companionLine": "Inspecting is brave. What else do you notice?",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w3:dp_fact_sort:poor": {
+      "scoreBand": "poor",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "Yanking made more flowers. Let's try looking with the magnifying glass instead.",
       "redirect": false,
       "safetyFlag": "none"
     },
     "w4:dp_breathe:strong": {
       "scoreBand": "strong",
-      "skill": "calm",
+      "skill": "empathy",
       "confidence": 1,
-      "companionLine": "I still feel nervous… and my body feels softer. Thank you.",
+      "companionLine": "Walking beside you feels better than behind or ahead. Thank you for inviting me.",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -45,15 +53,15 @@
       "scoreBand": "partial",
       "skill": "calm",
       "confidence": 1,
-      "companionLine": "In… 2… 3… Out… Keep matching me.",
+      "companionLine": "That kindness helped. Color is coming back… keep going.",
       "redirect": false,
       "safetyFlag": "none"
     },
     "w5:dp_choose_path:strong": {
       "scoreBand": "strong",
-      "skill": "courage",
+      "skill": "empathy",
       "confidence": 1,
-      "companionLine": "Okay… one careful step. I'm holding on — and I'm coming with you.",
+      "companionLine": "I have a purpose… thank you for seeing that. The cave feels brighter.",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -61,7 +69,7 @@
       "scoreBand": "partial",
       "skill": "worry_brave",
       "confidence": 1,
-      "companionLine": "We can always go back. But if we never cross, we'll never discover whether my worry was right this time. Want one careful step together?",
+      "companionLine": "Remembering how I helped softens my sparks. Want to say more?",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -69,7 +77,7 @@
       "scoreBand": "strong",
       "skill": "courage",
       "confidence": 1,
-      "companionLine": "I thought we couldn't… but we did. Thank you for helping me.",
+      "companionLine": "We were scared… and we still did it. Together. Thank you.",
       "redirect": false,
       "safetyFlag": "none"
     },
@@ -77,7 +85,7 @@
       "scoreBand": "partial",
       "skill": "worry_brave",
       "confidence": 1,
-      "companionLine": "Creak… we're doing it. One more plank!",
+      "companionLine": "One more step. My knees shake — and I'm still here with you.",
       "redirect": false,
       "safetyFlag": "none"
     }

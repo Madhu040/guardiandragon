@@ -1,39 +1,55 @@
 {
   "id": "dp_choose_path",
-  "prompt": "Wize extends a wing. No answer is highlighted. What do you choose?",
+  "prompt": "Memories glow: Flicker has helped before. What do you want Flicker to know?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["courage", "worry_brave"],
-  "pivotLockMs": 2000,
+  "selSkills": [
+    "empathy",
+    "self_worth",
+    "worry_brave"
+  ],
+  "pivotLockMs": 1500,
   "options": [
     {
-      "id": "opt_go_back",
-      "label": "Go back",
-      "selScore": "partial"
+      "id": "opt_thanks",
+      "label": "Thank you \u2014 you have a purpose",
+      "selScore": "strong"
     },
     {
-      "id": "opt_keep_going",
-      "label": "Keep going",
+      "id": "opt_help",
+      "label": "You've helped me a lot",
       "selScore": "strong"
+    },
+    {
+      "id": "opt_broken",
+      "label": "You're broken \u2014 stop warning me",
+      "selScore": "poor"
     }
   ],
   "companionContext": {
-    "situation": "After looking and breathing, choose approach or retreat at the Singing Bridge",
-    "npcEmotion": "nervous hope",
-    "ageBand": "8-10"
+    "situation": "Cave of Purpose \u2014 Nova sees Flicker saved them from real danger; appreciate the protector instead of rejecting anxiety",
+    "npcEmotion": "vulnerable",
+    "ageBand": "5-7"
   },
   "consequences": [
     {
       "band": "strong",
-      "sceneId": "w6",
-      "fx": ["first_step"],
-      "meterDeltas": { "courage": 0.5, "worry_brave": 0.35 }
+      "sceneId": "w5",
+      "fx": [
+        "first_step"
+      ],
+      "meterDeltas": {
+        "empathy": 0.5,
+        "self_worth": 0.35,
+        "worry_brave": 0.35
+      }
     },
     {
       "band": "partial",
       "sceneId": "w5",
-      "repairAction": "offer-hand",
-      "meterDeltas": { "courage": 0.05 }
+      "meterDeltas": {
+        "empathy": 0.2
+      }
     },
     {
       "band": "poor",
@@ -42,17 +58,17 @@
     }
   ],
   "emotionalArc": {
-    "childStateEntering": "nervous and informed",
+    "childStateEntering": "seeing Flicker's helpful past",
     "childStateExiting": {
-      "strong": "committed, agency intact",
-      "partial": "agency preserved, gently invited forward",
-      "poor": "safe choice space"
+      "strong": "appreciative, cave lights up",
+      "partial": "softening",
+      "poor": "gently redirected \u2014 Flicker isn't the enemy"
     },
     "companionStance": {
-      "strong": "gripping backpack, willing",
-      "partial": "relieved then curious",
-      "poor": "staying close"
+      "strong": "glowing, proud",
+      "partial": "hopeful",
+      "poor": "hurt but still near"
     },
-    "recoveryCadence": "go back → Wize preserves agency → invite one careful step"
+    "recoveryCadence": "anxiety has a useful job; the skill is telling danger from possibility"
   }
 }

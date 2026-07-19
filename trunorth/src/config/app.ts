@@ -23,10 +23,37 @@ function viteNumber(key: string, fallback: number): number {
   return Number.isFinite(n) ? n : fallback;
 }
 
+/**
+ * Prefer same-origin API (Vite `/api` proxy) whenever the page is not on
+ * localhost, or when VITE_API_URL points at localhost. That way a phone on
+ * Wi‑Fi talking to http://192.168.x.x:5173 still reaches the Mac's API.
+ */
+export function resolveApiUrl(): string {
+  const configured = viteString("VITE_API_URL", "");
+  if (typeof location === "undefined") return configured;
+
+  const host = location.hostname;
+  const onLocalhost = host === "localhost" || host === "127.0.0.1";
+  const configuredIsLocal =
+    !configured ||
+    configured.includes("localhost") ||
+    configured.includes("127.0.0.1");
+
+  if (!onLocalhost && configuredIsLocal) return "";
+  return configured;
+}
+
 /** Static build-time / file defaults (overridable via `.env`) */
 export const appConfig = {
-  /** Base URL for the Hono API. Empty string = same-origin / Vite proxy. */
-  apiUrl: viteString("VITE_API_URL", ""),
+  /**
+   * Base URL for the Hono API.
+   * Empty string = same-origin / Vite proxy (required for phone LAN play —
+   * a hardcoded localhost API URL breaks on other devices).
+   * Prefer `resolveApiUrl()` at call time; this snapshot is for convenience.
+   */
+  get apiUrl(): string {
+    return resolveApiUrl();
+  },
   /** Force demo mode even without `?demo=1`. */
   forceDemoMode: viteBool("VITE_DEMO_MODE", false),
   features: {
@@ -51,7 +78,7 @@ export const appConfig = {
     companionArchetype: viteString("VITE_DEFAULT_COMPANION_ARCHETYPE", "companion_dragon"),
     chapterId: viteString("VITE_DEFAULT_CHAPTER_ID", "ch2"),
     startSceneId: viteString("VITE_DEFAULT_START_SCENE", "w1"),
-    ageBand: viteString("VITE_DEFAULT_AGE_BAND", "8-10") as "5-7" | "8-10" | "11-15",
+    ageBand: viteString("VITE_DEFAULT_AGE_BAND", "5-7") as "5-7" | "8-10" | "11-15",
     baselineStrength: viteString("VITE_DEFAULT_BASELINE_STRENGTH", "worry_brave"),
   },
   timing: {
@@ -67,7 +94,7 @@ export const appConfig = {
     companionFollowLag: viteNumber("VITE_COMPANION_FOLLOW_LAG", 0.88),
   },
   productName: viteString("VITE_PRODUCT_NAME", "TruNorth"),
-} as const;
+};
 
 export type AppConfig = typeof appConfig;
 

@@ -1,64 +1,75 @@
 {
   "id": "dp_fact_sort",
-  "prompt": "Wize: \"Sometimes our minds tell stories before we know the facts.\" Which thought is a STORY?",
+  "prompt": "A huge flower shouts: \"What if everyone laughs?\" Inspect it with your magnifying glass. What do you discover?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["worry_brave", "adapting_to_change"],
-  "pivotLockMs": 1500,
+  "selSkills": [
+    "worry_brave",
+    "adapting_to_change"
+  ],
+  "pivotLockMs": 1200,
   "options": [
     {
-      "id": "opt_noise",
-      "label": "\"The bridge makes noises.\"",
-      "selScore": "partial"
-    },
-    {
-      "id": "opt_might",
-      "label": "\"We might fall.\"",
-      "selScore": "partial"
-    },
-    {
-      "id": "opt_will_break",
-      "label": "\"The bridge WILL break.\"",
+      "id": "opt_tiny",
+      "label": "\ud83d\udd0d It's a tiny nervous flower",
       "selScore": "strong"
+    },
+    {
+      "id": "opt_clue",
+      "label": "\ud83d\udd0d Worries can be clues",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_fight",
+      "label": "\u270a Yank the flower out!",
+      "selScore": "poor"
     }
   ],
   "companionContext": {
-    "situation": "Sorting FACT vs MAYBE vs STORY after inspecting the Singing Bridge",
-    "npcEmotion": "uncertainty",
-    "ageBand": "8-10"
+    "situation": "Meadow of Curiosity \u2014 investigate animated worry-flowers instead of fighting them; worries shrink when inspected",
+    "npcEmotion": "curious-scared",
+    "ageBand": "5-7"
   },
   "consequences": [
     {
       "band": "strong",
-      "sceneId": "w4",
-      "fx": ["worry_cloud_shrink"],
-      "meterDeltas": { "worry_brave": 0.5, "adapting_to_change": 0.35 }
+      "sceneId": "w3",
+      "fx": [
+        "curiosity_glow"
+      ],
+      "meterDeltas": {
+        "worry_brave": 0.5,
+        "adapting_to_change": 0.35
+      }
     },
     {
       "band": "partial",
       "sceneId": "w3",
-      "fx": ["gentle_nudge"],
-      "repairAction": "sit-with",
-      "meterDeltas": { "worry_brave": 0.1 }
+      "meterDeltas": {
+        "worry_brave": 0.2
+      }
     },
     {
       "band": "poor",
       "sceneId": "w3",
-      "repairAction": "sit-with"
+      "repairAction": "sit-with",
+      "fx": [
+        "gentle_nudge"
+      ]
     }
   ],
   "emotionalArc": {
-    "childStateEntering": "curious about thoughts",
+    "childStateEntering": "facing big scary-looking worries",
     "childStateExiting": {
-      "strong": "clear, flexible thinking",
-      "partial": "gently redirected",
-      "poor": "safe retry"
+      "strong": "curious, worries look smaller",
+      "partial": "learning to look",
+      "poor": "safe retry \u2014 fighting grew more flowers"
     },
     "companionStance": {
-      "strong": "blushing, soft laugh",
-      "partial": "listening to Wize",
-      "poor": "waiting without shame"
+      "strong": "amazed the flower shrank",
+      "partial": "peeking with Nova",
+      "poor": "still bristling"
     },
-    "recoveryCadence": "mis-sort → Wize invites another try → stars on correct story"
+    "recoveryCadence": "curiosity transforms the flower; fighting makes more grow"
   }
 }

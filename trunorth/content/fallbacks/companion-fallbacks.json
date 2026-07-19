@@ -1,44 +1,44 @@
 {
   "dp_quest_start": {
-    "strong": "YES! The Shimmer Crystal is waiting — let's go!",
-    "partial": "Whenever you're ready, I'll be right here.",
-    "poor": "No rush. Adventures start with a hello.",
+    "strong": "Yes! Star Crystals and the Sky Festival — I'll come with you, even if I'm worried.",
+    "partial": "Whenever you're ready, I'll be right here beside you.",
+    "poor": "No rush. Guardians wait. Adventures start with a hello.",
     "timeout": "Take your time. I'm right here with you.",
     "safety": "Let's keep our adventure safe and kind. A grown-up can help if you need."
   },
   "dp_investigate": {
-    "strong": "Thank you for looking with me. Checking helps the scary stories get smaller.",
-    "partial": "One careful look still counts. Want to check another clue?",
-    "poor": "We can look together. Wize says noticing is what Guardian Dragons do.",
+    "strong": "Asking that helped. I don't actually know if we'll get lost… the clouds feel smaller.",
+    "partial": "Curious questions help. Want to ask another?",
+    "poor": "We can ask together. The owl says questions help protectors feel safer.",
     "timeout": "No rush. Feelings are big sometimes — we can sit with that.",
     "safety": "If something feels really hard, a trusted grown-up can help. You're not alone."
   },
   "dp_fact_sort": {
-    "strong": "You found the story! I tell LOTS of stories — but now we know which one wasn't a fact.",
-    "partial": "Hmm… that one might be a fact or a maybe. Which thought says WILL — like it's already decided?",
-    "poor": "Stories aren't bad. Let's try once more: which thought is the scary story?",
+    "strong": "Whoa — the huge flower was just a tiny nervous one. Looking carefully helped!",
+    "partial": "Inspecting is brave. What else do you notice?",
+    "poor": "Yanking made more flowers. Let's try looking with the magnifying glass instead.",
     "timeout": "Thinking takes a minute. I'm with you.",
     "safety": "If worries feel too big, a trusted grown-up can help sort them."
   },
   "dp_breathe": {
-    "strong": "I still feel nervous… and my body feels softer. Thank you.",
-    "partial": "In… 2… 3… Out… Keep matching me.",
-    "poor": "Breathing is hard when sparks fly. Let's try one slow breath together.",
+    "strong": "Walking beside you feels better than behind or ahead. Thank you for inviting me.",
+    "partial": "That kindness helped. Color is coming back… keep going.",
+    "poor": "I still feel left out. A hug, a listen, or sitting together would help.",
     "timeout": "Big feelings need a minute. I'm right here.",
     "safety": "If your body feels unsafe, find a trusted grown-up right away."
   },
   "dp_choose_path": {
-    "strong": "Okay… one careful step. I'm holding on — and I'm coming with you.",
-    "partial": "We can always go back. But if we never cross, we'll never discover whether my worry was right this time. Want one careful step together?",
-    "poor": "You're the boss of this choice. I'll stay close either way.",
+    "strong": "I have a purpose… thank you for seeing that. The cave feels brighter.",
+    "partial": "Remembering how I helped softens my sparks. Want to say more?",
+    "poor": "I'm not broken — I care a lot. Can we try a thank-you instead?",
     "timeout": "Ready when you are.",
     "safety": "You're safe here. A grown-up is always there if you need extra help."
   },
   "dp_crossing": {
-    "strong": "I thought we couldn't… but we did. Thank you for helping me.",
-    "partial": "Creak… we're doing it. One more plank!",
+    "strong": "We were scared… and we still did it. Together. Thank you.",
+    "partial": "One more step. My knees shake — and I'm still here with you.",
     "poor": "Every step counts. Let's take the next one together.",
-    "timeout": "One careful plank at a time.",
+    "timeout": "One careful step at a time.",
     "safety": "You're safe here. A grown-up can help if fear feels too big."
   },
   "dp_leftout_bench": {

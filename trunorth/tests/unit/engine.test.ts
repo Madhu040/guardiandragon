@@ -7,10 +7,10 @@ import { insightForStep, buildJourneyReflection } from "../../src/counselor/insi
 import { renderFullBodyCharacter } from "../../src/render/characters.js";
 
 describe("DecisionResolver", () => {
-  it("resolves strong choice for story on fact sort", () => {
+  it("resolves strong choice when inspecting a worry-flower", () => {
     const resolver = new DecisionResolver();
     const dp = getDecisionPoint("dp_fact_sort")!;
-    expect(resolver.resolveChoice(dp, "opt_will_break")).toBe("strong");
+    expect(resolver.resolveChoice(dp, "opt_tiny")).toBe("strong");
   });
 
   it("applies meter deltas on strong band for investigate", () => {
@@ -22,11 +22,11 @@ describe("DecisionResolver", () => {
     expect(state.meters.worry_brave.fill).toBeGreaterThan(0);
   });
 
-  it("keeps agency on go-back with repair", () => {
+  it("offers repair when rejecting Flicker's purpose", () => {
     const resolver = new DecisionResolver();
     const dp = getDecisionPoint("dp_choose_path")!;
     const state = createInitialGameState();
-    const { nextSceneId, repairAction } = resolver.applyConsequence(state, dp, "partial");
+    const { nextSceneId, repairAction } = resolver.applyConsequence(state, dp, "poor");
     expect(nextSceneId).toBe("w5");
     expect(repairAction).toBe("offer-hand");
   });
@@ -52,21 +52,27 @@ describe("Safety filters", () => {
 });
 
 describe("Golden path", () => {
-  it("has all Singing Bridge showcase scenes", () => {
+  it("has all Little Dragon showcase scenes", () => {
     for (const id of GOLDEN_PATH) {
       expect(SCENES[id]).toBeDefined();
     }
     expect(GOLDEN_PATH).toEqual(["w1", "w2", "w3", "w4", "w5", "w6", "w7"]);
   });
 
-  it("has meadow chapter scenes and no removed forest chapter", () => {
+  it("splits Little Dragon into three chapter phases", () => {
+    expect(SCENES.w1.chapterId).toBe("ch2");
+    expect(SCENES.w3.chapterId).toBe("ch2");
+    expect(SCENES.w4.chapterId).toBe("ch3");
+    expect(SCENES.w5.chapterId).toBe("ch3");
+    expect(SCENES.w6.chapterId).toBe("ch4");
+    expect(SCENES.w7.chapterId).toBe("ch4");
     expect(SCENES.e1).toBeDefined();
     expect(SCENES.c1).toBeUndefined();
   });
 });
 
 describe("Counselor insights", () => {
-  it("returns child and parent coaching for a Singing Bridge step", () => {
+  it("returns child and parent coaching for a Little Dragon step", () => {
     const insight = insightForStep("dp_fact_sort", "strong");
     expect(insight.forChild.length).toBeGreaterThan(20);
     expect(insight.forParent.length).toBeGreaterThan(20);

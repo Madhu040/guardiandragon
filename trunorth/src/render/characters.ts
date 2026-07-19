@@ -258,7 +258,7 @@ function dragonSvg(expr: string, size: number): string {
   ];
   const sparks =
     expr === "worried"
-      ? rect(2, 14, 1, GOLD) + rect(17, 12, 1, GOLD) + rect(1, 20, 1, "#ff6b35") + rect(18, 18, 1, GOLD)
+      ? rect(2, 14, 1, GOLD) + rect(17, 12, 1, GOLD) + rect(1, 20, 1, GOLD) + rect(18, 18, 1, GOLD)
       : "";
   const sparkles = expr === "happy" ? pixelSparkles([[2, 5], [17, 3], [1, 13], [18, 11]]) : "";
   return sprite(rows, P, size, pixelFace(expr, 10, 13, 17, { brows: false }) + sparks + sparkles);

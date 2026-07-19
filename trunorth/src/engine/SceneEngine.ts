@@ -107,9 +107,9 @@ export class SceneEngine {
       if (taps < requiredTaps && !isFinalOption) {
         const progressLine =
           decisionPointId === "dp_breathe"
-            ? `Breath ${taps}… Flicker's heart softens.`
+            ? `Kindness ${taps}… Flicker's color returns.`
             : decisionPointId === "dp_crossing"
-              ? `Plank ${taps}… the bridge holds.`
+              ? `Step ${taps}… still nervous, still going.`
               : `Step ${taps} — keep going!`;
         this.callbacks.onCompanionLine(progressLine);
         this.emitInsight(dp, "partial");
@@ -245,9 +245,9 @@ export class SceneEngine {
     if (repairAction) {
       const repairLine =
         dp.id === "dp_choose_path"
-          ? "We can always go back. But if we never cross, we'll never discover whether Flicker's worry was right this time. Want one careful step together?"
+          ? "I'm not broken — I care a lot. Can we try a thank-you instead?"
           : dp.id === "dp_fact_sort"
-            ? "Stories aren't bad — which thought says the bridge WILL break?"
+            ? "Yanking made more flowers. Let's try looking with the magnifying glass instead."
             : "Let's try a kinder way together.";
       this.callbacks.onCompanionLine(repairLine);
       this.setPhase("decision");

@@ -1,22 +1,22 @@
 {
   "id": "w7",
-  "chapterId": "ch2",
+  "chapterId": "ch4",
   "order": 7,
   "movementTier": "A",
-  "background": "bg_bridge",
-  "gridMapId": "singing-bridge",
-  "narration": "Flicker steps aside with a shy, proud smile — the way is clear! Walk across the Singing Bridge, one plank at a time, and reach the checkmark on the far side.",
+  "background": "bg_mountain",
+  "gridMapId": "mountain-festival",
+  "narration": "Flicker steps up beside Nova with a shy, proud smile — nervous and still going! Walk onto the Sky Festival stage and reach the Star Crystal.",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [520, 760], "expression": "happy" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [720, 800], "expression": "happy" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [780, 760], "expression": "happy" }
+    { "assetRef": "char_wize", "id": "companion", "position": [420, 200], "expression": "happy" },
+    { "assetRef": "char_avatar", "id": "avatar", "position": [560, 260], "expression": "happy" },
+    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [640, 220], "expression": "happy" }
   ],
   "triggers": [],
   "collectibles": [],
   "objects": [
     {
-      "id": "obj_bridge_finish",
-      "cell": [49, 25],
+      "id": "obj_festival_finish",
+      "cell": [50, 16],
       "assetRef": "finish_check",
       "label": "Level Complete",
       "hint": "Press E to finish the level",

@@ -1,0 +1,17 @@
+{
+  "id": "dlg_star_legend",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "Ah, a traveler! This old scroll tells the legend of the Star Crystals — five of them, scattered across Everbright, waiting for someone brave enough to gather them."
+    },
+    {
+      "text": "Many explorers bring a Guardian Dragon along. Its worry isn't a flaw — it's a job. The trick is learning when to listen and when to keep walking anyway."
+    },
+    {
+      "text": "When you reach the Sky Festival stage, look back at how far you've come. The crystals shine brightest for the ones who felt nervous and went anyway."
+    }
+  ]
+}

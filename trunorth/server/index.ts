@@ -5,6 +5,7 @@ import { randomUUID } from "crypto";
 import { db } from "./db/migrate.js";
 import { signToken, verifyToken } from "./auth/jwt.js";
 import { companionRoutes } from "./routes/companion.js";
+import { togetherRoutes } from "./routes/together.js";
 import { serverConfig } from "./config.js";
 import type { AuthUser } from "../src/types/index.js";
 
@@ -13,7 +14,16 @@ type Variables = { user: AuthUser };
 const app = new Hono<{ Variables: Variables }>();
 
 app.use("*", cors({
-  origin: [...serverConfig.corsOrigins],
+  origin: (origin) => {
+    if (!origin) return serverConfig.corsOrigins[0] ?? "*";
+    if (serverConfig.corsOrigins.includes(origin)) return origin;
+    // Dev / LAN: allow phones opening http://192.168.x.x:5173
+    if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return origin;
+    if (/^https?:\/\/(192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin)) {
+      return origin;
+    }
+    return serverConfig.corsOrigins[0] ?? origin;
+  },
   allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowHeaders: ["Content-Type", "Authorization"],
 }));
@@ -160,5 +170,6 @@ app.put("/api/progress/:childId", authMiddleware, async (c) => {
 });
 
 app.route("/api", companionRoutes);
+app.route("/api", togetherRoutes);
 
 export { app };

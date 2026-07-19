@@ -3,25 +3,27 @@
   "chapterId": "ch2",
   "order": 1,
   "movementTier": "B",
-  "background": "bg_bridge",
-  "gridMapId": "singing-bridge",
-  "narration": "Morning light fills Everbright. Flicker wakes with a tiny yawn — then the Shimmer Crystal appears across the valley! New quest: reach it and earn a Courage Feather.",
+  "background": "bg_forest",
+  "gridMapId": "forest-of-questions",
+  "narration": "In Everbright, young explorer Nova dreams of the Sky Festival. To join, Nova must collect five Star Crystals. Flicker — a small, fuzzy Guardian Dragon — appears with worried eyes. \"Wait! What if it goes badly?\"",
   "characters": [
     { "assetRef": "char_wize", "id": "companion", "position": [520, 760], "expression": "calm" },
     { "assetRef": "char_avatar", "id": "avatar", "position": [720, 800], "expression": "happy" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "happy", "solidSize": [190, 80] }
+    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "worried", "solidSize": [190, 80] }
   ],
   "triggers": [
     { "id": "quest_trigger", "bounds": [440, 640, 400, 220], "action": "startDecision", "target": "dp_quest_start" }
   ],
-  "collectibles": [],
+  "collectibles": [
+    { "id": "spark_start", "assetRef": "collectible_spark", "position": [280, 840], "kind": "kindness_spark" }
+  ],
   "objects": [
     {
-      "id": "obj_bridge_notice",
+      "id": "obj_star_notice",
       "cell": [70, 80],
       "assetRef": "notice_scroll",
       "hint": "Press E to read",
-      "interaction": { "kind": "openDialog", "dialogId": "dlg_bridge_legend" }
+      "interaction": { "kind": "openDialog", "dialogId": "dlg_star_legend" }
     }
   ],
   "decisionPoints": ["dp_quest_start"],

@@ -37,8 +37,9 @@ Client-facing variables **must** start with `VITE_` so Vite exposes them to the 
 
 ## Features
 
+- **Play Together invites** — shareable 4-letter code + link (`?invite=CODE`); rooms sync via API across devices
 - **Custom scene engine** — no game engine; DOM + CSS scene-graph state machine
-- **Showcase golden path** — Level 1 The Singing Bridge (W1→W6 with Flicker & Wize)
+- **Showcase golden path** — Level 1 *The Little Dragon Who Wouldn't Stop Guarding* (W1→W7 with Nova, Flicker & Wize)
 - **AI companion** — server-side Claude proxy with 5-layer safety pipeline
 - **Demo mode** — fully offline, zero network (`?demo=1`)
 - **Parent authentication** — JWT-based parent accounts (children never log in directly)
@@ -83,6 +84,7 @@ npm run dev
 ### 4. Play
 
 - **Guest play:** Click "Play Now" on the landing page
+- **Play Together (cross-device):** Click "Play Together" → host as parent or child → share the code/link → partner opens `?invite=CODE` on any device → both pick name, color, character → Let's play. Requires `npm run dev` (API on :3001). For phone + laptop on the same Wi‑Fi, open the game via your LAN IP (e.g. `http://192.168.x.x:5173`) so the invite link stays reachable.
 - **Demo mode (offline):** http://localhost:5173?demo=1
 - **Parent account:** Register/login to manage child profiles and sync progress
 
@@ -143,7 +145,8 @@ Browser Client          API Server (Hono)
 ## Golden Path
 
 ```
-W1 (quest) → W2 (investigate) → W3 (fact/story) → W4 (breathe) → W5 (choose) → W6 (crossing + Courage Feather)
+W1 (quest) → W2 (Forest of Questions) → W3 (Meadow of Curiosity) → W4 (Valley of Welcome)
+→ W5 (Cave of Purpose) → W6 (Mountain / Festival steps) → W7 (walk on stage + Star Crystal)
 ```
 
 ## License

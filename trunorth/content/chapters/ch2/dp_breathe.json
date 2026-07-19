@@ -1,43 +1,84 @@
 {
   "id": "dp_breathe",
-  "prompt": "Place a calm hand with Flicker. Tap each breath — five slow cycles.",
+  "prompt": "Flicker feels left out. Show kindness \u2014 each choice restores a little color. How do you welcome Flicker?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["calm", "worry_brave"],
+  "selSkills": [
+    "empathy",
+    "calm",
+    "worry_brave"
+  ],
   "options": [
-    { "id": "breath_1", "label": "Breath 1 — In… 2… 3… Out…", "selScore": "partial" },
-    { "id": "breath_2", "label": "Breath 2 — Heart slows…", "selScore": "partial" },
-    { "id": "breath_3", "label": "Breath 3 — Tail untangles…", "selScore": "partial" },
-    { "id": "breath_4", "label": "Breath 4 — Fire softens…", "selScore": "partial" },
-    { "id": "breath_5", "label": "Breath 5 — Eyes softer", "selScore": "strong" }
+    {
+      "id": "kind_1",
+      "label": "\u2764\ufe0f Hug Flicker",
+      "selScore": "partial"
+    },
+    {
+      "id": "kind_2",
+      "label": "\u2b50 Listen",
+      "selScore": "partial"
+    },
+    {
+      "id": "kind_3",
+      "label": "\ud83c\udf4e Share a dragon snack",
+      "selScore": "partial"
+    },
+    {
+      "id": "kind_4",
+      "label": "\ud83c\udf88 Sit beside Flicker",
+      "selScore": "partial"
+    },
+    {
+      "id": "kind_5",
+      "label": "\ud83e\udd1d Walk beside \u2014 not ahead or behind",
+      "selScore": "strong"
+    }
   ],
   "companionContext": {
-    "situation": "Body still alarmed after thinking; co-regulate with Flicker through breathing",
-    "npcEmotion": "anxiety",
-    "ageBand": "8-10"
+    "situation": "Valley of Welcome \u2014 invite Flicker beside Nova; kindness restores color to rejected guardian dragons",
+    "npcEmotion": "lonely-hopeful",
+    "ageBand": "5-7"
   },
   "consequences": [
     {
       "band": "strong",
       "sceneId": "w5",
-      "fx": ["calm_wave"],
-      "meterDeltas": { "calm": 1.0, "worry_brave": 0.25 }
+      "fx": [
+        "calm_wave"
+      ],
+      "meterDeltas": {
+        "empathy": 0.75,
+        "calm": 0.5,
+        "worry_brave": 0.25
+      }
     },
-    { "band": "partial", "sceneId": "w4", "meterDeltas": { "calm": 0.2 } },
-    { "band": "poor", "sceneId": "w4", "repairAction": "tap-kind-action" }
+    {
+      "band": "partial",
+      "sceneId": "w4",
+      "meterDeltas": {
+        "empathy": 0.2,
+        "calm": 0.15
+      }
+    },
+    {
+      "band": "poor",
+      "sceneId": "w4",
+      "repairAction": "tap-kind-action"
+    }
   ],
   "emotionalArc": {
-    "childStateEntering": "mind clearer, body still buzzing",
+    "childStateEntering": "seeing rejected dragons feel lost",
     "childStateExiting": {
-      "strong": "calmer body, still honest about nerves",
-      "partial": "mid-breath, progressing",
-      "poor": "encouraged to continue"
+      "strong": "Flicker smiling beside Nova",
+      "partial": "color returning",
+      "poor": "encouraged to keep welcoming"
     },
     "companionStance": {
-      "strong": "sigh of relief, softer sparks",
-      "partial": "matching the breath",
-      "poor": "waiting with player"
+      "strong": "smiling for the first time",
+      "partial": "warming",
+      "poor": "waiting nearby"
     },
-    "recoveryCadence": "each successful breath slows heart, untangles tail, softens fire"
+    "recoveryCadence": "ignoring anxiety makes it louder; kindness changes it"
   }
 }

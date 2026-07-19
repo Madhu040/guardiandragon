@@ -5,6 +5,7 @@ import type {
   ScoreBand,
   SkillId,
 } from "../types/index.js";
+import { newId } from "../util/id.js";
 
 export class DecisionResolver {
   resolveChoice(dp: DecisionPoint, optionId: string): ScoreBand {
@@ -39,7 +40,7 @@ export class DecisionResolver {
     }
 
     const event: GameEvent = {
-      id: crypto.randomUUID(),
+      id: newId(),
       timestamp: new Date().toISOString(),
       sceneId: state.progress.currentSceneId,
       decisionPointId: dp.id,

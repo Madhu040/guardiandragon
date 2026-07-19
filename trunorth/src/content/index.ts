@@ -21,7 +21,7 @@ import dpLeftout from "../../content/chapters/ch1/dp_leftout_bench.json";
 import dpAskGrownup from "../../content/chapters/ch1/dp_ask_grownup.json";
 
 import dlgMeadowWelcome from "../../content/chapters/ch1/dlg_meadow_welcome.json";
-import dlgBridgeLegend from "../../content/chapters/ch2/dlg_bridge_legend.json";
+import dlgStarLegend from "../../content/chapters/ch2/dlg_star_legend.json";
 
 export const SCENES: Record<string, Scene> = {
   w1: w1 as Scene,
@@ -58,28 +58,32 @@ export function getDecisionPoint(id: string): DecisionPoint | undefined {
 /** Dialogs shown by `openDialog` stage objects (`content/chapters/<ch>/dlg_*.json`). */
 export const DIALOGS: Record<string, DialogRecord> = {
   dlg_meadow_welcome: dlgMeadowWelcome as DialogRecord,
-  dlg_bridge_legend: dlgBridgeLegend as DialogRecord,
+  dlg_star_legend: dlgStarLegend as DialogRecord,
 };
 
 export function getDialog(id: string): DialogRecord | undefined {
   return DIALOGS[id];
 }
 
-/** Level 1 — The Singing Bridge (conference demo path) */
+/** Level 1 — The Little Dragon Who Wouldn't Stop Guarding (ages 5–7), 3 phases */
 export const GOLDEN_PATH = ["w1", "w2", "w3", "w4", "w5", "w6", "w7"];
 
 export const CHAPTER_FINALE: Record<string, string> = {
   ch1: "e3",
-  ch2: "w7",
+  ch2: "w3",
+  ch3: "w5",
+  /** Phase 3 ends by walking to the w7 finish checkmark after dp_crossing. */
+  ch4: "w7",
 };
 
 /**
- * Decisions that complete their chapter on a strong resolve. ch2 has none:
- * after dp_crossing the player physically walks the bridge to the w7
- * finish-object checkmark.
+ * Decisions that complete their chapter on a strong resolve.
+ * Phase 3 (ch4) has none: after dp_crossing the player walks to the w7 checkmark.
  */
 export const CHAPTER_COMPLETE_DECISION: Record<string, string> = {
   ch1: "dp_ask_grownup",
+  ch2: "dp_fact_sort",
+  ch3: "dp_choose_path",
 };
 
 /** Multi-step mini-games: required taps before a strong resolve */
