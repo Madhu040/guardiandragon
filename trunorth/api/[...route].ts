@@ -1,8 +1,22 @@
 /**
  * Vercel Node.js Function entry point. Wraps the existing Hono `app`
  * (server/index.ts) so every `/api/*` route Vercel receives is forwarded to
- * it unchanged — the catch-all filename (`[[...route]]`) is what makes one
- * function handle every path under `/api`.
+ * it unchanged — the catch-all filename is what makes one function handle
+ * every path under `/api`.
+ *
+ * File name matters here: `[...route].ts` (single brackets — "one or more
+ * segments"), **not** `[[...route]].ts` (double brackets — "zero or more
+ * segments", an optional catch-all). The double-bracket form is a Next.js
+ * convention; plain Vercel Functions outside Next.js don't reliably honor it
+ * as a true wildcard. Confirmed live, not assumed: with the double-bracket
+ * file, every single-segment path (`/api/health`, `/api/companion`) reached
+ * this function fine, but every multi-segment path (`/api/auth/register`,
+ * `/api/auth/me`, `/api/progress/:id`, `/api/together/...`) 404'd at Vercel's
+ * own routing layer — the request never even reached this function (the 404
+ * carried Vercel's own branded error format, the same `cle1::` request-ID
+ * signature the earlier crash pages had). Renamed to the single-bracket form,
+ * which matches any depth `/api/<anything>` (just not bare `/api` with zero
+ * segments, which this app never calls directly anyway).
  *
  * Node runtime (not Edge) is required: `server/db/migrate.ts` opens a
  * better-sqlite3 file, which only runs under Node.
