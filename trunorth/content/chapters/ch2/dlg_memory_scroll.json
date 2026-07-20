@@ -1,0 +1,14 @@
+{
+  "id": "dlg_memory_scroll",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "A scroll, half-unrolled, glowing faintly like the crystals around it."
+    },
+    {
+      "text": "It lists every time a Guardian Dragon kept someone safe. {companion}'s name is on it more than once."
+    }
+  ]
+}

@@ -5,16 +5,182 @@
   "movementTier": "B",
   "background": "bg_meadow",
   "gridMapId": "meadow-of-curiosity",
-  "narration": "Valley of Welcome. Other creatures pushed their Guardian Dragons away — the dragons sit gray and sad on distant hills. Flicker still follows Nova. The Turtle Sage says: \"Guardians don't leave, because they care too much. Invite them beside you.\"",
+  "narration": "Valley of Welcome. Other creatures pushed their Guardian Dragons away \u2014 the dragons sit gray and sad on distant hills. Flicker still follows Nova. The Turtle Sage says: \"Guardians don't leave, because they care too much. Invite them beside you.\"",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [1040, 720], "expression": "calm" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [440, 800], "expression": "calm" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [780, 760], "expression": "worried", "solidSize": [190, 80] },
-    { "assetRef": "char_helper_deer", "id": "helper_deer", "position": [1160, 780], "expression": "calm" }
+    {
+      "assetRef": "char_wize",
+      "id": "companion",
+      "position": [
+        1040,
+        720
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        440,
+        800
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_flicker_dragon",
+      "id": "flicker",
+      "position": [
+        780,
+        760
+      ],
+      "expression": "worried",
+      "solidSize": [
+        190,
+        80
+      ]
+    },
+    {
+      "assetRef": "char_helper_deer",
+      "id": "helper_deer",
+      "position": [
+        1160,
+        780
+      ],
+      "expression": "calm"
+    }
   ],
   "triggers": [
-    { "id": "welcome_trigger", "bounds": [400, 620, 520, 260], "action": "startDecision", "target": "dp_breathe" }
+    {
+      "id": "welcome_trigger",
+      "bounds": [
+        400,
+        620,
+        520,
+        260
+      ],
+      "action": "startDecision",
+      "target": "dp_breathe"
+    }
   ],
-  "collectibles": [],
-  "decisionPoints": ["dp_breathe"]
+  "collectibles": [
+    {
+      "id": "spark_welcome",
+      "assetRef": "collectible_spark",
+      "position": [
+        300,
+        850
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "spark_breathe_kind",
+      "assetRef": "collectible_spark",
+      "position": [
+        1700,
+        850
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_breathe"
+    },
+    {
+      "id": "crystal_w4_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_w4_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        509,
+        243
+      ]
+    },
+    {
+      "id": "crystal_w4_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1450,
+        340
+      ]
+    },
+    {
+      "id": "crystal_w4_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1181,
+        427
+      ]
+    },
+    {
+      "id": "crystal_w4_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        893,
+        513
+      ]
+    },
+    {
+      "id": "crystal_w4_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1392,
+        869
+      ]
+    },
+    {
+      "id": "crystal_w4_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        701,
+        1031
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_welcome_bell",
+      "cell": [
+        14,
+        88
+      ],
+      "assetRef": "bell",
+      "label": "An old welcome bell",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_welcome_bell"
+      }
+    },
+    {
+      "id": "obj_petals_on_wind",
+      "cell": [
+        83,
+        82
+      ],
+      "assetRef": "petals",
+      "label": "Scattered petals",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_petals_on_wind"
+      }
+    }
+  ],
+  "decisionPoints": [
+    "dp_breathe"
+  ],
+  "goal": "Some Guardian Dragons got left behind on the hills. Let's walk the valley first and see what a real welcome looks like.",
+  "spawnCell": [
+    90,
+    31
+  ]
 }

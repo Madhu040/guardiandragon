@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:api\"",
@@ -16,6 +16,7 @@
     "lint": "eslint src server api --max-warnings 0",
     "typecheck": "tsc --noEmit && tsc -p tsconfig.api.json",
     "validate:content": "tsx scripts/validate-content.ts",
+    "audit:bundle": "tsx scripts/audit-bundle-size.ts",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "db:migrate": "tsx server/db/migrate.ts",
@@ -31,17 +32,19 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@playwright/test": "^1.51.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.13.10",
-    "@vitest/coverage-v8": "^3.0.9",
+    "@vitest/coverage-v8": "4.1.10",
     "ajv": "^8.17.1",
     "concurrently": "^9.1.2",
     "eslint": "^9.22.0",
     "tsx": "^4.19.3",
     "typescript": "~5.8.2",
-    "vite": "^6.2.2",
-    "vitest": "^3.0.9"
+    "typescript-eslint": "^8.64.0",
+    "vite": "8.1.5",
+    "vitest": "4.1.10"
   }
 }

@@ -2,6 +2,85 @@ import { readdirSync, readFileSync, statSync } from "fs";
 import { join, basename } from "path";
 
 const chaptersDir = join(import.meta.dirname, "../content/chapters");
+/**
+ * Stage objects must not be buried under a character or sitting inside a decision
+ * trigger. Authoring the Ch.1 discovery pass produced seven such collisions in one go —
+ * labels rendered on top of each other and objects were unreachable because the trigger
+ * fired first. Cheap to check, invisible until someone plays the scene.
+ */
+const OBJECT_CLEARANCE_PX = 150;
+
+/**
+ * Sprites are feet-anchored and ~110–120 world px tall, so a character placed with its feet
+ * nearer than this to the top of the world renders with its head cut off by the frame — and
+ * the camera can't compensate, being already clamped to the world's top edge. Mirrors
+ * `MIN_FEET_Y` in `WorldRuntime` (which clamps the *player*; this guards *authored* content).
+ */
+const MIN_CHARACTER_FEET_Y = 150;
+
+function checkCharacterHeadroom(
+  name: string,
+  data: { characters?: { id?: string; position?: unknown }[] },
+): void {
+  for (const ch of data.characters ?? []) {
+    const pos = ch.position;
+    if (!Array.isArray(pos) || pos.length !== 2) continue;
+    const y = pos[1] as number;
+    if (y < MIN_CHARACTER_FEET_Y) {
+      fail(
+        name,
+        `character "${ch.id}" is at y=${y}, above the ${MIN_CHARACTER_FEET_Y}px line — ` +
+          `its head would be cut off by the top of the frame`,
+      );
+    }
+  }
+}
+
+function checkObjectPlacement(
+  name: string,
+  data: {
+    objects?: { id?: string; cell?: unknown }[];
+    characters?: { id?: string; position?: unknown }[];
+    triggers?: { id?: string; bounds?: unknown }[];
+  },
+): void {
+  const objects = data.objects ?? [];
+  if (objects.length === 0) return;
+
+  for (const obj of objects) {
+    const cell = obj.cell;
+    if (!Array.isArray(cell) || cell.length !== 2) continue;
+    const ox = ((cell[0] as number) + 0.5) * (1920 / 100);
+    const oy = ((cell[1] as number) + 0.5) * (1080 / 100);
+
+    for (const ch of data.characters ?? []) {
+      const pos = ch.position;
+      if (!Array.isArray(pos) || pos.length !== 2) continue;
+      const dist = Math.hypot(ox - (pos[0] as number), oy - (pos[1] as number));
+      if (dist < OBJECT_CLEARANCE_PX) {
+        fail(
+          name,
+          `object "${obj.id}" is ${Math.round(dist)}px from character "${ch.id}" ` +
+            `(needs ${OBJECT_CLEARANCE_PX}px clearance so labels don't collide)`,
+        );
+      }
+    }
+
+    for (const tr of data.triggers ?? []) {
+      const b = tr.bounds;
+      if (!Array.isArray(b) || b.length !== 4) continue;
+      const [x, y, w, h] = b as number[];
+      if (ox >= x - 40 && ox <= x + w + 40 && oy >= y - 40 && oy <= y + h + 40) {
+        fail(
+          name,
+          `object "${obj.id}" sits inside trigger "${tr.id}" — the decision will fire ` +
+            `before the child can examine it`,
+        );
+      }
+    }
+  }
+}
+
 let errors = 0;
 
 function walk(dir: string): string[] {
@@ -105,6 +184,8 @@ for (const file of files) {
     fail(name, "missing id or chapterId");
   } else {
     validateObjects(name, data);
+    checkObjectPlacement(name, data);
+    checkCharacterHeadroom(name, data);
   }
   console.log(`✅ ${name}`);
 }

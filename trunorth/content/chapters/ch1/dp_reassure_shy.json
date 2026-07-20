@@ -1,0 +1,48 @@
+{
+  "id": "dp_reassure_shy",
+  "prompt": "The rabbit friend feels shy about joining. What do you say?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["empathy", "calm"],
+  "options": [
+    {
+      "id": "opt_together",
+      "label": "It's okay to feel shy — let's go together, I'll stay right by you.",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_fine",
+      "label": "Come on, you'll be fine once we start.",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_hurry",
+      "label": "Hurry up, everyone is already waiting!",
+      "selScore": "poor"
+    }
+  ],
+  "companionContext": {
+    "situation": "A peer hesitates, nervous to join a group at play",
+    "npcEmotion": "shy-nervous",
+    "ageBand": "5-7"
+  },
+  "consequences": [
+    { "band": "strong", "sceneId": "e2b", "meterDeltas": { "empathy": 0.75, "calm": 0.5 } },
+    { "band": "partial", "sceneId": "e2b", "meterDeltas": { "calm": 0.25 } },
+    { "band": "poor", "sceneId": "e2a", "repairAction": "offer-hand" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "seeing a friend hold back",
+    "childStateExiting": {
+      "strong": "warm, steady — the friend feels safe to try",
+      "partial": "encouraging, still learning to slow down",
+      "poor": "guided to try a gentler, patient welcome"
+    },
+    "companionStance": {
+      "strong": "soft glow, proud of the patience",
+      "partial": "gentle nod",
+      "poor": "kneels close, models a calm invitation"
+    },
+    "recoveryCadence": "poor → companion models naming the feeling first → child retries"
+  }
+}

@@ -3,6 +3,7 @@
   "prompt": "Jamie looks left out. What do you do?",
   "inputMode": "both",
   "themeSensitivity": "standard",
+  "typedRubricRef": "inclusion",
   "selSkills": ["empathy", "friendship_repair"],
   "options": [
     {

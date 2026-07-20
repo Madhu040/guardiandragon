@@ -26,7 +26,12 @@ export interface WorldCallbacks {
   onInteract: (decisionTarget: string) => void;
   onCollect: (collectibleId: string) => void;
   onObjectInteract?: (objectId: string) => void;
+  /** Fired on a fixed cadence while the avatar is moving (spec §17B.4 footstep cue). */
+  onFootstep?: () => void;
 }
+
+/** Footstep cue cadence while walking — a light, unhurried pace, not a spam of clicks. */
+const FOOTSTEP_INTERVAL_S = 0.32;
 
 /** What the avatar is currently in range of (trigger zone or stage object). */
 export type NearInteractable =
@@ -41,11 +46,43 @@ interface SolidBody {
 const SOLID_SKIP = new Set(["avatar", "companion", "worry_cloud"]);
 
 /**
+ * Camera zoom, from config with a `?zoom=N` URL override for testing. e2e boots with
+ * `?zoom=1` so the framing (which moves elements around) never destabilises the logic
+ * tests; a dedicated camera test exercises the real zoom.
+ */
+function resolveCameraZoom(): number {
+  if (typeof window !== "undefined") {
+    const raw = new URLSearchParams(window.location.search).get("zoom");
+    const parsed = raw === null ? NaN : Number(raw);
+    if (!Number.isNaN(parsed) && parsed >= 1 && parsed <= 4) return parsed;
+  }
+  return appConfig.world.cameraZoom;
+}
+
+/**
  * Character sprites anchor at the feet (translate(-50%, -100%), ~110px tall), so
  * the visual center sits this far above the position point. Grid collision tests
  * the avatar's center, per the level design convention.
  */
 const AVATAR_CENTER_OFFSET_Y = 55;
+
+/**
+ * Minimum feet Y, so a sprite's head is never cut off by the top of the frame.
+ *
+ * Sprites are feet-anchored and ~110–120 world px tall (`--char-size`; `--px` maps 1 world
+ * px to 1 sprite px), so a character whose feet sit less than a sprite-height from the top
+ * of the world renders with its head above `y = 0`. The camera cannot compensate: it is
+ * already clamped to the world's top edge (see `applyCamera`), and translating further
+ * would reveal empty space above the background. So the fix belongs here — keep the
+ * avatar's feet below the line. 150 leaves headroom for the tallest sprite (worry_cloud,
+ * 120) plus margin.
+ */
+export const MIN_FEET_Y = 150;
+
+/** Clamp a feet position so the sprite above it stays fully inside the frame. */
+export function keepSpriteOnScreen(p: { x: number; y: number }): { x: number; y: number } {
+  return { x: p.x, y: Math.max(MIN_FEET_Y, p.y) };
+}
 
 export class WorldRuntime {
   private input = new InputController();
@@ -59,8 +96,12 @@ export class WorldRuntime {
   private frozen = true;
 
   private avatar: Vec2 = { x: 640, y: 800 };
+  /** Smoothed camera focus point (world coords). Lerps toward the avatar each frame. */
+  private cam: Vec2 = { x: WORLD_W / 2, y: WORLD_H / 2 };
+  private readonly cameraZoom = resolveCameraZoom();
   private companion: Vec2 = { x: 520, y: 760 };
   private facing: Facing = "down";
+  private footstepTimer = 0;
   private collected = new Set<string>();
   private nearTarget: NearInteractable | null = null;
   private solids: SolidBody[] = [];
@@ -91,13 +132,19 @@ export class WorldRuntime {
       this.seedFromScene(scene);
       this.rebuildSolids(scene);
       if (this.grid) {
-        const spawn = this.grid.map.cellCenterWorld(...this.grid.spawnCell);
-        this.avatar = { x: spawn.x, y: spawn.y + AVATAR_CENTER_OFFSET_Y };
+        // A scene may start the child somewhere other than the level's default spawn, so
+        // each scene can put the decision across the map from where you begin (Scene.spawnCell).
+        const cell = scene.spawnCell ?? this.grid.spawnCell;
+        const spawn = this.grid.map.cellCenterWorld(...cell);
+        this.avatar = keepSpriteOnScreen({ x: spawn.x, y: spawn.y + AVATAR_CENTER_OFFSET_Y });
         this.companion = { x: this.avatar.x - 100, y: this.avatar.y };
       }
+      // Snap the camera to the new spawn so a scene change doesn't swoop across the map.
+      this.cam = { x: this.avatar.x, y: this.avatar.y };
     }
 
     this.applyDomPositions();
+    this.applyCamera(0);
     this.syncCollectibleDom();
     this.renderHint();
 
@@ -191,12 +238,52 @@ export class WorldRuntime {
     }
 
     this.applyDomPositions();
+    this.applyCamera(dt);
     this.renderHint();
+  }
+
+  /**
+   * Following camera — transforms the whole world layer to keep the avatar near centre,
+   * clamped so it never shows past the level edges. Pure display: the avatar's world
+   * coordinates, collision, and proximity are untouched, so only *what's shown* changes.
+   *
+   * The transform is `scale(z) translate(tx%, ty%)`; the translate percentages are relative
+   * to the layer's own size, so this is resolution-independent (works identically on a
+   * laptop and a projector). See the math note in `applyCamera`.
+   */
+  private applyCamera(dt: number): void {
+    const layer = this.viewport;
+    if (!layer) return;
+    const z = this.cameraZoom;
+    if (z <= 1.001) {
+      if (layer.style.transform) layer.style.transform = "";
+      return;
+    }
+
+    // Smoothly chase the avatar (dt-based, frame-rate independent). dt = 0 snaps.
+    const k = dt <= 0 ? 1 : 1 - Math.pow(0.0009, dt);
+    this.cam.x += (this.avatar.x - this.cam.x) * k;
+    this.cam.y += (this.avatar.y - this.cam.y) * k;
+
+    const fx = this.cam.x / WORLD_W;
+    const fy = this.cam.y / WORLD_H;
+    // Centre the focus point: with `scale(z) translate(T)`, a point at fraction f lands at
+    // z*(f*W + T). Setting that to W/2 gives T% = (0.5/z - f)*100.
+    const min = (1 / z - 1) * 100; // most negative translate before an edge shows
+    const tx = Math.min(0, Math.max(min, (0.5 / z - fx) * 100));
+    const ty = Math.min(0, Math.max(min, (0.5 / z - fy) * 100));
+    layer.style.transformOrigin = "0 0";
+    layer.style.transform = `scale(${z}) translate(${tx.toFixed(3)}%, ${ty.toFixed(3)}%)`;
   }
 
   private stepMovement(dt: number): void {
     const move = this.input.getMoveVector();
-    if (move.x === 0 && move.y === 0) return;
+    if (move.x === 0 && move.y === 0) {
+      // Reset so the next step after standing still fires right away, not after a
+      // partially-elapsed interval left over from the last time the avatar was walking.
+      this.footstepTimer = 0;
+      return;
+    }
 
     this.facing = this.input.getFacing(this.facing);
     const speed = appConfig.world.moveSpeedPx;
@@ -204,19 +291,21 @@ export class WorldRuntime {
     const footprint = { w: 56, h: 36 };
     const solidBoxes = this.solids.map((s) => s.box);
 
+    this.footstepTimer += dt;
+    if (this.footstepTimer >= FOOTSTEP_INTERVAL_S) {
+      this.footstepTimer = 0;
+      this.callbacks?.onFootstep?.();
+    }
+
     if (this.grid) {
       const center = { x: this.avatar.x, y: this.avatar.y - AVATAR_CENTER_OFFSET_Y };
       const moved = moveWithGridCollision(center, delta, this.grid.map, solidBoxes);
-      this.avatar = { x: moved.x, y: moved.y + AVATAR_CENTER_OFFSET_Y };
+      this.avatar = keepSpriteOnScreen({ x: moved.x, y: moved.y + AVATAR_CENTER_OFFSET_Y });
       return;
     }
 
-    this.avatar = moveWithCollision(
-      this.avatar,
-      delta,
-      footprint,
-      solidBoxes,
-      this.walkBounds,
+    this.avatar = keepSpriteOnScreen(
+      moveWithCollision(this.avatar, delta, footprint, solidBoxes, this.walkBounds),
     );
   }
 
@@ -236,12 +325,19 @@ export class WorldRuntime {
     const feet = characterFeetBox(this.avatar.x, this.avatar.y);
     for (const c of this.scene.collectibles) {
       if (this.collected.has(c.id)) continue;
+
+      // A gated Kindness Spark (§7.6) is not rendered until its kind action has happened,
+      // and GameView owns that decision. Treat the rendered element as the source of truth
+      // so the runtime can't hand the child a spark they haven't earned yet — and so the
+      // gate logic lives in exactly one place.
+      const el = this.viewport?.querySelector(`[data-collectible-id="${c.id}"]`);
+      if (!el || el.classList.contains("collected")) continue;
+
       const box = characterFeetBox(c.position[0], c.position[1], 48, 48);
       if (aabbOverlap(feet, expandAabb(box, 12))) {
         this.collected.add(c.id);
         this.callbacks?.onCollect(c.id);
-        const el = this.viewport?.querySelector(`[data-collectible-id="${c.id}"]`);
-        if (el) el.classList.add("collected");
+        el.classList.add("collected");
       }
     }
   }

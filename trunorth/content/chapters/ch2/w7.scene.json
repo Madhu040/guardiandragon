@@ -5,23 +5,118 @@
   "movementTier": "A",
   "background": "bg_mountain",
   "gridMapId": "mountain-festival",
-  "narration": "Flicker steps up beside Nova with a shy, proud smile — nervous and still going! Walk onto the Sky Festival stage and reach the Star Crystal.",
+  "narration": "Flicker steps up beside Nova with a shy, proud smile \u2014 nervous and still going! Walk onto the Sky Festival stage and reach the Star Crystal.",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [420, 200], "expression": "happy" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [560, 260], "expression": "happy" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [640, 220], "expression": "happy" }
+    {
+      "assetRef": "char_wize",
+      "id": "companion",
+      "position": [
+        420,
+        200
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        560,
+        260
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_flicker_dragon",
+      "id": "flicker",
+      "position": [
+        640,
+        220
+      ],
+      "expression": "happy"
+    }
   ],
   "triggers": [],
-  "collectibles": [],
+  "collectibles": [
+    {
+      "id": "crystal_w7_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        778,
+        157
+      ]
+    },
+    {
+      "id": "crystal_w7_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        259,
+        621
+      ]
+    },
+    {
+      "id": "crystal_w7_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1123,
+        956
+      ]
+    },
+    {
+      "id": "crystal_w7_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1296,
+        535
+      ]
+    },
+    {
+      "id": "crystal_w7_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        394,
+        880
+      ]
+    },
+    {
+      "id": "crystal_w7_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        566,
+        459
+      ]
+    },
+    {
+      "id": "crystal_w7_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1430,
+        794
+      ]
+    }
+  ],
   "objects": [
     {
       "id": "obj_festival_finish",
-      "cell": [50, 16],
+      "cell": [
+        50,
+        16
+      ],
       "assetRef": "finish_check",
       "label": "Level Complete",
       "hint": "Press E to finish the level",
-      "interaction": { "kind": "finish", "mode": "complete" }
+      "interaction": {
+        "kind": "finish",
+        "mode": "complete"
+      }
     }
   ],
-  "decisionPoints": []
+  "decisionPoints": [],
+  "goal": "One more step, {name}. Let's walk out onto that stage together."
 }

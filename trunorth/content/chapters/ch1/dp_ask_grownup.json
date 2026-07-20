@@ -3,7 +3,7 @@
   "prompt": "The grown-up asks if anyone needs help. What do you say?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
-  "selSkills": ["courage", "empathy"],
+  "selSkills": ["ask_for_help", "courage", "empathy"],
   "options": [
     {
       "id": "opt_share",

@@ -1,0 +1,48 @@
+{
+  "id": "dp_share_flower",
+  "prompt": "You both reach for the last sunflower at the same time. What do you do?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["friendship_repair", "empathy"],
+  "options": [
+    {
+      "id": "opt_turns",
+      "label": "Let's take turns — you smell it first, then we share it together.",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_giveup",
+      "label": "Here, you can have it.",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_grab",
+      "label": "I grabbed it first — it's already mine!",
+      "selScore": "poor"
+    }
+  ],
+  "companionContext": {
+    "situation": "Two friends want the same object at once",
+    "npcEmotion": "hopeful-uncertain",
+    "ageBand": "5-7"
+  },
+  "consequences": [
+    { "band": "strong", "sceneId": "e2c", "meterDeltas": { "friendship_repair": 0.75, "empathy": 0.5 } },
+    { "band": "partial", "sceneId": "e2c", "meterDeltas": { "empathy": 0.3 } },
+    { "band": "poor", "sceneId": "e2b", "repairAction": "sit-with" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "both wanting the same thing",
+    "childStateExiting": {
+      "strong": "fair and connected — sharing made two happy",
+      "partial": "kind, still learning that sharing can be mutual",
+      "poor": "safe retry — grabbing left someone out"
+    },
+    "companionStance": {
+      "strong": "beaming at the teamwork",
+      "partial": "warm encouragement",
+      "poor": "sits between them, opens a fair trade"
+    },
+    "recoveryCadence": "poor → companion models taking turns → child retries"
+  }
+}

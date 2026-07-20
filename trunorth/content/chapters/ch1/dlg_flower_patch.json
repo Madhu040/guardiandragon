@@ -1,0 +1,16 @@
+{
+  "id": "dlg_flower_patch",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "One sun-flower left in the whole patch. Just the one.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Two of you want it. That's the tricky part, isn't it?",
+      "speaker": "{companion}"
+    }
+  ]
+}

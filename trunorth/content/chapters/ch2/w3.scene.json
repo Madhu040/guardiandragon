@@ -5,17 +5,173 @@
   "movementTier": "B",
   "background": "bg_meadow",
   "gridMapId": "meadow-of-curiosity",
-  "narration": "Meadow of Curiosity. Giant worry-flowers fill the field — some tiny, some huge. Pulling them only makes more grow. Wize smiles: \"You can't get rid of worries by fighting them. Investigate instead.\"",
+  "narration": "Meadow of Curiosity. Giant worry-flowers fill the field \u2014 some tiny, some huge. Pulling them only makes more grow. Wize smiles: \"You can't get rid of worries by fighting them. Investigate instead.\"",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [920, 700], "expression": "happy" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [400, 800], "expression": "neutral" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [560, 780], "expression": "worried", "solidSize": [190, 80] }
+    {
+      "assetRef": "char_wize",
+      "id": "companion",
+      "position": [
+        920,
+        700
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        400,
+        800
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_flicker_dragon",
+      "id": "flicker",
+      "position": [
+        560,
+        780
+      ],
+      "expression": "worried",
+      "solidSize": [
+        190,
+        80
+      ]
+    }
   ],
   "triggers": [
-    { "id": "meadow_inspect", "bounds": [360, 620, 640, 240], "action": "startDecision", "target": "dp_fact_sort" }
+    {
+      "id": "meadow_inspect",
+      "bounds": [
+        360,
+        620,
+        640,
+        240
+      ],
+      "action": "startDecision",
+      "target": "dp_fact_sort"
+    }
   ],
   "collectibles": [
-    { "id": "spark_meadow", "assetRef": "collectible_spark", "position": [1100, 800], "kind": "kindness_spark" }
+    {
+      "id": "spark_meadow",
+      "assetRef": "collectible_spark",
+      "position": [
+        1100,
+        800
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "spark_fact_sort_kind",
+      "assetRef": "collectible_spark",
+      "position": [
+        1650,
+        850
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_fact_sort"
+    },
+    {
+      "id": "crystal_w3_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_w3_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        336,
+        1042
+      ]
+    },
+    {
+      "id": "crystal_w3_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        86,
+        999
+      ]
+    },
+    {
+      "id": "crystal_w3_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1738,
+        977
+      ]
+    },
+    {
+      "id": "crystal_w3_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1219,
+        967
+      ]
+    },
+    {
+      "id": "crystal_w3_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        739,
+        945
+      ]
+    },
+    {
+      "id": "crystal_w3_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1450,
+        772
+      ]
+    }
   ],
-  "decisionPoints": ["dp_fact_sort"]
+  "objects": [
+    {
+      "id": "obj_worry_patch",
+      "cell": [
+        11,
+        85
+      ],
+      "assetRef": "flower_patch",
+      "label": "Tiny worry-flowers",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_worry_patch"
+      }
+    },
+    {
+      "id": "obj_gathering_basket",
+      "cell": [
+        80,
+        85
+      ],
+      "assetRef": "basket",
+      "label": "An empty gathering basket",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_gathering_basket"
+      }
+    }
+  ],
+  "decisionPoints": [
+    "dp_fact_sort"
+  ],
+  "goal": "These worry-flowers look strange up close. Let's go take a proper look, {name} \u2014 before I talk us into running.",
+  "spawnCell": [
+    90,
+    31
+  ]
 }

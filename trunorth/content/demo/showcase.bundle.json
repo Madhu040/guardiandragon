@@ -88,6 +88,110 @@
       "companionLine": "One more step. My knees shake — and I'm still here with you.",
       "redirect": false,
       "safetyFlag": "none"
+    },
+    "w1:dp_quest_start:partial": {
+      "scoreBand": "partial",
+      "skill": "courage",
+      "confidence": 1,
+      "companionLine": "Whenever you're ready, I'll be right here beside you.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w1:dp_quest_start:poor": {
+      "scoreBand": "poor",
+      "skill": "courage",
+      "confidence": 1,
+      "companionLine": "No rush. Guardians wait. Adventures start with a hello.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w2:dp_investigate:partial": {
+      "scoreBand": "partial",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "Curious questions help. Want to ask another?",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "w2:dp_investigate:poor": {
+      "scoreBand": "poor",
+      "skill": "worry_brave",
+      "confidence": 1,
+      "companionLine": "We can ask together. Questions help worried friends feel safer.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2a:dp_reassure_shy:strong": {
+      "scoreBand": "strong",
+      "skill": "empathy",
+      "confidence": 1,
+      "companionLine": "You told them it's okay to feel shy — and stayed close. That's real kindness.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2a:dp_reassure_shy:partial": {
+      "scoreBand": "partial",
+      "skill": "calm",
+      "confidence": 1,
+      "companionLine": "Cheering helps. Naming the shy feeling first can help even more.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2a:dp_reassure_shy:poor": {
+      "scoreBand": "poor",
+      "skill": "empathy",
+      "confidence": 1,
+      "companionLine": "Hurrying makes shy feelings bigger. Let's try a calm, patient hello.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2b:dp_share_flower:strong": {
+      "scoreBand": "strong",
+      "skill": "friendship_repair",
+      "confidence": 1,
+      "companionLine": "Taking turns means you BOTH get the flower — that's teamwork!",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2b:dp_share_flower:partial": {
+      "scoreBand": "partial",
+      "skill": "empathy",
+      "confidence": 1,
+      "companionLine": "Giving it away was generous. Next time, share it so you each get a turn.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2b:dp_share_flower:poor": {
+      "scoreBand": "poor",
+      "skill": "friendship_repair",
+      "confidence": 1,
+      "companionLine": "Grabbing left your friend out. Taking turns shares the fun.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2c:dp_repair_oops:strong": {
+      "scoreBand": "strong",
+      "skill": "friendship_repair",
+      "confidence": 1,
+      "companionLine": "Sorry AND offering to fix it — that's a strong, brave repair.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2c:dp_repair_oops:partial": {
+      "scoreBand": "partial",
+      "skill": "friendship_repair",
+      "confidence": 1,
+      "companionLine": "Saying sorry is a good start. Offering to help fix it makes it whole.",
+      "redirect": false,
+      "safetyFlag": "none"
+    },
+    "e2c:dp_repair_oops:poor": {
+      "scoreBand": "poor",
+      "skill": "friendship_repair",
+      "confidence": 1,
+      "companionLine": "Accidents happen — blaming keeps hearts hurting. A sorry helps.",
+      "redirect": false,
+      "safetyFlag": "none"
     }
   }
 }

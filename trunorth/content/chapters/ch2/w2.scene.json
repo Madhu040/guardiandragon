@@ -7,16 +7,180 @@
   "gridMapId": "forest-of-questions",
   "narration": "Forest of Questions. Flicker blocks the path: \"What if we get lost?\" Wize the owl whispers: protectors feel less scared when we ask curious questions. Dark clouds swirl around Flicker.",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [980, 700], "expression": "calm" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [420, 800], "expression": "worried" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [640, 760], "expression": "worried", "solidSize": [190, 80] },
-    { "assetRef": "fx_worry_cloud", "id": "worry_cloud", "position": [640, 500], "expression": "big" }
+    {
+      "assetRef": "char_wize",
+      "id": "companion",
+      "position": [
+        980,
+        700
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        420,
+        800
+      ],
+      "expression": "worried"
+    },
+    {
+      "assetRef": "char_flicker_dragon",
+      "id": "flicker",
+      "position": [
+        640,
+        760
+      ],
+      "expression": "worried",
+      "solidSize": [
+        190,
+        80
+      ]
+    },
+    {
+      "assetRef": "fx_worry_cloud",
+      "id": "worry_cloud",
+      "position": [
+        640,
+        500
+      ],
+      "expression": "big"
+    }
   ],
   "triggers": [
-    { "id": "forest_questions", "bounds": [400, 600, 560, 260], "action": "startDecision", "target": "dp_investigate" }
+    {
+      "id": "forest_questions",
+      "bounds": [
+        400,
+        600,
+        560,
+        260
+      ],
+      "action": "startDecision",
+      "target": "dp_investigate"
+    }
   ],
   "collectibles": [
-    { "id": "spark_forest", "assetRef": "collectible_spark", "position": [300, 820], "kind": "kindness_spark" }
+    {
+      "id": "spark_forest",
+      "assetRef": "collectible_spark",
+      "position": [
+        300,
+        820
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "spark_investigate_kind",
+      "assetRef": "collectible_spark",
+      "position": [
+        1750,
+        720
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_investigate"
+    },
+    {
+      "id": "crystal_w2_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        86,
+        157
+      ]
+    },
+    {
+      "id": "crystal_w2_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1123,
+        394
+      ]
+    },
+    {
+      "id": "crystal_w2_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1450,
+        826
+      ]
+    },
+    {
+      "id": "crystal_w2_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        298,
+        275
+      ]
+    },
+    {
+      "id": "crystal_w2_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1411,
+        535
+      ]
+    },
+    {
+      "id": "crystal_w2_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1066,
+        837
+      ]
+    },
+    {
+      "id": "crystal_w2_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        586,
+        275
+      ]
+    }
   ],
-  "decisionPoints": ["dp_investigate"]
+  "objects": [
+    {
+      "id": "obj_windblown_hat",
+      "cell": [
+        11,
+        88
+      ],
+      "assetRef": "dropped_hat",
+      "label": "A hat, blown off mid-run",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_windblown_hat"
+      }
+    },
+    {
+      "id": "obj_torn_note",
+      "cell": [
+        83,
+        79
+      ],
+      "assetRef": "note",
+      "label": "A scrap of paper in the branches",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_torn_note"
+      }
+    }
+  ],
+  "decisionPoints": [
+    "dp_investigate"
+  ],
+  "goal": "That worry cloud isn't going anywhere on its own. Come on, let's go see what's actually there.",
+  "spawnCell": [
+    90,
+    31
+  ]
 }

@@ -1,0 +1,16 @@
+{
+  "id": "dlg_lonely_ball",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "A ball nobody's throwing. That's a pretty lonely sound \u2014 nothing at all.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Everyone ran off to play something else. Someone got left behind.",
+      "speaker": "{companion}"
+    }
+  ]
+}

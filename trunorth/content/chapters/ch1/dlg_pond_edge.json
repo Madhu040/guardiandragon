@@ -1,0 +1,16 @@
+{
+  "id": "dlg_pond_edge",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "Look at the water \u2014 you and Jamie, side by side.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "An hour ago there was only one of you in that reflection.",
+      "speaker": "{companion}"
+    }
+  ]
+}

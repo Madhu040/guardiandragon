@@ -48,6 +48,27 @@
     "timeout": "Noticing is the first step. I'm with you.",
     "safety": "If loneliness feels too big, a trusted grown-up can help."
   },
+  "dp_reassure_shy": {
+    "strong": "You told them it's okay to feel shy — and stayed close. Going together shrinks big feelings.",
+    "partial": "Cheering helps. Naming the shy feeling first can help even more.",
+    "poor": "Hurrying makes shy feelings bigger. Let's try a calm, patient hello instead.",
+    "timeout": "New things take a breath. I'm right here with you both.",
+    "safety": "If a feeling gets too big, a trusted grown-up can help."
+  },
+  "dp_share_flower": {
+    "strong": "Taking turns means you BOTH get the flower — that's teamwork!",
+    "partial": "Giving it away was generous. Next time, share it so you each get a turn.",
+    "poor": "Grabbing left your friend out. Taking turns shares the fun.",
+    "timeout": "There's no rush — we can figure out a fair turn together.",
+    "safety": "If sharing feels hard, a grown-up can help you take turns."
+  },
+  "dp_repair_oops": {
+    "strong": "Sorry AND offering to fix it — that's a strong, brave repair.",
+    "partial": "Saying sorry is a good start. Offering to help fix it makes it whole.",
+    "poor": "Accidents happen — blaming keeps hearts hurting. A sorry helps.",
+    "timeout": "Take a breath. Owning a mistake is brave, and I'm with you.",
+    "safety": "If a mix-up feels too big, a trusted grown-up can help you both."
+  },
   "dp_ask_grownup": {
     "strong": "Asking a grown-up for help is brave — that keeps everyone safer.",
     "partial": "Starting small is okay. Sharing with a grown-up is another brave option.",

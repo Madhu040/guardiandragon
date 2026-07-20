@@ -1,0 +1,48 @@
+{
+  "id": "dp_repair_oops",
+  "prompt": "Oops — you knocked over the deer friend's flower crown by accident. They look sad. What do you do?",
+  "inputMode": "choice",
+  "themeSensitivity": "standard",
+  "selSkills": ["friendship_repair", "courage"],
+  "options": [
+    {
+      "id": "opt_repair",
+      "label": "I'm sorry I knocked it over. Can we fix it together?",
+      "selScore": "strong"
+    },
+    {
+      "id": "opt_accident",
+      "label": "Sorry, it was an accident.",
+      "selScore": "partial"
+    },
+    {
+      "id": "opt_blame",
+      "label": "It wasn't my fault — you were already too close.",
+      "selScore": "poor"
+    }
+  ],
+  "companionContext": {
+    "situation": "Child accidentally breaks a peer's creation and sees them hurt",
+    "npcEmotion": "sad-disappointed",
+    "ageBand": "5-7"
+  },
+  "consequences": [
+    { "band": "strong", "sceneId": "e3", "fx": ["calm_wave"], "meterDeltas": { "friendship_repair": 1.0, "courage": 0.35 } },
+    { "band": "partial", "sceneId": "e3", "meterDeltas": { "friendship_repair": 0.4 } },
+    { "band": "poor", "sceneId": "e2c", "repairAction": "walk-back" }
+  ],
+  "emotionalArc": {
+    "childStateEntering": "surprised, a little embarrassed",
+    "childStateExiting": {
+      "strong": "brave — owned the mistake and offered to make it right",
+      "partial": "honest, learning that repair adds to sorry",
+      "poor": "redirected away from blame toward accountability"
+    },
+    "companionStance": {
+      "strong": "upright, proud of the honesty",
+      "partial": "gentle nod",
+      "poor": "soft reminder: accidents get repaired, not blamed"
+    },
+    "recoveryCadence": "poor → companion models a sorry-plus-fix → child retries"
+  }
+}

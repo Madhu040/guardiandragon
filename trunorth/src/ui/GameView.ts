@@ -6,9 +6,15 @@ import type { JourneyReflection } from "../counselor/insights.js";
 import { discussPrompt } from "../counselor/coPlay.js";
 import { zoneFromBackground, zoneForChapter } from "../content/zones.js";
 import { isGridDebug, resolveGridLevel } from "../content/gridLevels.js";
+import { visibleSparks } from "../content/sparks.js";
 import { renderGridBackground } from "../render/gridBackground.js";
-import { contentConfig } from "../config/content.js";
+import { renderAmbientLife } from "../render/ambientLife.js";
+import { renderProgressPath } from "../render/progressPath.js";
+import { backgroundImageUrl, characterImageUrl, objectImageUrl } from "../content/assetManifest.js";
+import { personalize } from "../content/personalize.js";
+import { celebrationFor } from "../config/content.js";
 import { isSpeechSupported, isVoiceEnabled, setVoiceEnabled, speakLine, stopSpeaking } from "../audio/speech.js";
+import { isSfxEnabled, isSfxSupported, setSfxEnabled } from "../audio/sfx.js";
 import { COLOR_TUNES, type TogetherPlayer } from "../together/inviteStore.js";
 
 export interface CounselorPanelData {
@@ -93,6 +99,24 @@ export function renderGameView(
   brownie.textContent = `💎 ${state.progress.browniePoints}`;
   viewport.appendChild(brownie);
 
+  /**
+   * Discovery counter — "🔍 1 of 3". Tells the child there IS something to look for and
+   * how much is left, which is what makes exploring feel like a search rather than
+   * wandering. Deliberately a quiet chip, not a progress bar: §7.7 warns that HUD chrome
+   * "measures the child" and turns a felt story into a task.
+   */
+  const discoverables = (scene?.objects ?? []).filter(
+    (o) => o.interaction.kind === "openDialog",
+  );
+  if (scene && discoverables.length > 0) {
+    const found = (state.progress.discoveries?.[scene.id] ?? []).length;
+    const chip = document.createElement("div");
+    chip.className = found >= discoverables.length ? "discovery-chip complete" : "discovery-chip";
+    chip.textContent = `🔍 ${found} of ${discoverables.length}`;
+    chip.setAttribute("aria-label", `Discovered ${found} of ${discoverables.length} things to look at`);
+    viewport.appendChild(chip);
+  }
+
   const gridLevel = scene ? resolveGridLevel(scene) : null;
 
   // A scene can recast the follower companion (ch2: Wize guides while Flicker
@@ -114,11 +138,30 @@ export function renderGameView(
   hud.setAttribute("role", "group");
   hud.setAttribute("aria-label", "Skill meters");
   for (const skill of ["empathy", "calm", "courage"] as const) {
+    const { fill, level } = state.meters[skill];
     const meter = document.createElement("div");
     meter.className = "meter";
-    meter.setAttribute("aria-label", `${skill} level ${state.meters[skill].level}`);
+    // Flight destination for the §17B.2 particle burst — see src/render/juice.ts.
+    meter.dataset.meterSkill = skill;
+    // §7.2 requires a *visible fill state*. Until now the meter was a static emoji circle
+    // with a fixed border, so a skill filling up changed nothing on screen — the particle
+    // flight landed on a target that never responded. The ring below is that fill.
+    meter.style.setProperty("--fill", String(Math.max(0, Math.min(100, fill))));
+    meter.setAttribute(
+      "aria-label",
+      `${skill.replace(/_/g, " ")}: level ${level}, ${Math.round(fill)}% full`,
+    );
     const icons: Record<string, string> = { empathy: "❤️", calm: "🌊", courage: "⭐" };
-    meter.textContent = icons[skill] ?? "●";
+    const face = document.createElement("span");
+    face.className = "meter-face";
+    face.textContent = icons[skill] ?? "●";
+    meter.appendChild(face);
+    if (level > 1) {
+      const badge = document.createElement("span");
+      badge.className = "meter-level";
+      badge.textContent = String(level);
+      meter.appendChild(badge);
+    }
     hud.appendChild(meter);
   }
   viewport.appendChild(hud);
@@ -140,10 +183,53 @@ export function renderGameView(
     viewport.appendChild(voiceToggle);
   }
 
+  if (isSfxSupported()) {
+    const sfxToggle = document.createElement("button");
+    sfxToggle.className = "sfx-toggle";
+    const syncSfxToggle = () => {
+      const on = isSfxEnabled();
+      sfxToggle.textContent = on ? "🎵" : "🔕";
+      sfxToggle.setAttribute("aria-label", on ? "Turn sound effects off" : "Turn sound effects on");
+      sfxToggle.setAttribute("aria-pressed", String(on));
+    };
+    syncSfxToggle();
+    sfxToggle.onclick = () => {
+      setSfxEnabled(!isSfxEnabled());
+      syncSfxToggle();
+    };
+    viewport.appendChild(sfxToggle);
+  }
+
   if (scene) {
     const zoneMeta = zoneFromBackground(scene.background) ?? zoneForChapter(scene.chapterId);
+
+    // The camera layer. All *world-space* content (background, characters, collectibles,
+    // stage objects, hotspots, move hint) lives inside this and is transformed as one by
+    // WorldRuntime to follow the avatar — turning the fixed one-screen diorama into a
+    // world you scroll through. Screen chrome (HUD, pills, counter, discovery chip,
+    // overlays) stays on `viewport` and does not move. The layer is the same box as the
+    // viewport, so every child's `%` position is unchanged — the camera is a pure display
+    // transform over the same 1920×1080 world coordinates.
+    const world = document.createElement("div");
+    world.className = "world-layer";
+
     if (gridLevel) {
-      renderGridBackground(viewport, gridLevel, isGridDebug());
+      const debug = isGridDebug();
+      renderGridBackground(world, gridLevel, debug);
+      // Real art overlays the canvas grid (which stays underneath as the walk-map and,
+      // in ?gridDebug=1, the visible cell tint). If the PNG 404s, drop it and the canvas
+      // shows through — the offline demo never breaks on a missing background.
+      const artUrl = debug ? null : backgroundImageUrl(gridLevel.id);
+      if (artUrl) {
+        const art = document.createElement("img");
+        art.className = "grid-art";
+        art.src = artUrl;
+        art.alt = "";
+        art.setAttribute("aria-hidden", "true");
+        art.draggable = false;
+        art.onerror = () => art.remove();
+        world.appendChild(art);
+      }
     } else {
       const bg = document.createElement("div");
       const legacyClass = scene.background.includes("treehouse")
@@ -155,8 +241,15 @@ export function renderGameView(
             : "";
       bg.className = `scene-bg zone-${zoneMeta.id}${legacyClass ? ` ${legacyClass}` : ""}`;
       bg.style.backgroundImage = `url(${zoneMeta.image})`;
-      viewport.appendChild(bg);
+      world.appendChild(bg);
     }
+
+    // Ambient life + the diegetic stepping-stone path (spec §7.7) go into the world layer
+    // *before* the characters, so the camera carries them with the ground and they tuck
+    // behind everyone. Both are decorative (aria-hidden, pointer-events:none) and freeze
+    // under prefers-reduced-motion.
+    renderAmbientLife(world, zoneMeta.id);
+    renderProgressPath(world, scene.chapterId, scene.id);
 
     const sign = document.createElement("div");
     sign.className = "zone-sign";
@@ -177,7 +270,7 @@ export function renderGameView(
       sprite.className = `char-fullbody ${ch.id}${
         ch.expression?.includes("glow") || ch.expression?.includes("excited") ? " glow" : ""
       }`;
-      sprite.innerHTML = renderFullBodyCharacter({
+      const svg = renderFullBodyCharacter({
         id: ch.id,
         assetRef: ch.assetRef,
         expression: ch.expression,
@@ -185,6 +278,27 @@ export function renderGameView(
         companionArchetype: state.profile.companionArchetype,
         size: ch.id === "worry_cloud" ? 120 : 110,
       });
+      // Use the AI PNG when the manifest has one; if it fails to load, restore the SVG so
+      // the character never vanishes (spec §10.3 fallback).
+      const charUrl = characterImageUrl(
+        ch.id,
+        ch.assetRef,
+        state.profile.companionArchetype,
+        state.profile.avatar.skinTone,
+      );
+      if (charUrl) {
+        const img = document.createElement("img");
+        img.className = "sprite-png";
+        img.src = charUrl;
+        img.alt = "";
+        img.draggable = false;
+        img.onerror = () => {
+          sprite.innerHTML = svg;
+        };
+        sprite.appendChild(img);
+      } else {
+        sprite.innerHTML = svg;
+      }
       el.appendChild(sprite);
 
       const label = document.createElement("div");
@@ -223,18 +337,30 @@ export function renderGameView(
         el.style.zIndex = "75";
       }
 
-      viewport.appendChild(el);
+      world.appendChild(el);
     }
 
-    for (const item of scene.collectibles) {
+    // §7.6: gated sparks only exist once the kind action has happened, so a second run is
+    // "find what I missed" rather than a replay of the same lesson.
+    for (const item of visibleSparks(scene, state)) {
+      const alreadyFound = (state.progress.kindnessSparksFound[scene.id] ?? []).includes(item.id);
+      // Crystals (§7.1 scattered fun) read differently from Kindness Sparks (§7.6 replay
+      // mechanic) so the child can tell "a treat on my way" from "something I earned".
+      const isCrystal = item.kind === "crystal";
       const spark = document.createElement("div");
-      spark.className = "world-collectible";
+      spark.className = [
+        "world-collectible",
+        isCrystal ? "crystal" : "spark",
+        alreadyFound ? "collected" : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
       spark.dataset.collectibleId = item.id;
       spark.style.left = `${(item.position[0] / 1920) * 100}%`;
       spark.style.top = `${(item.position[1] / 1080) * 100}%`;
-      spark.setAttribute("aria-label", "Kindness spark");
-      spark.textContent = "✨";
-      viewport.appendChild(spark);
+      spark.setAttribute("aria-label", isCrystal ? "Crystal" : "Kindness spark");
+      spark.textContent = isCrystal ? "💎" : "✨";
+      world.appendChild(spark);
     }
 
     for (const obj of sceneObjects(scene)) {
@@ -247,10 +373,28 @@ export function renderGameView(
       el.style.top = `${(pos.y / 1080) * 100}%`;
       el.style.zIndex = String(10 + Math.floor(pos.y / 20));
       el.setAttribute("aria-label", obj.label ?? obj.hint ?? "Stage object");
+      // Off the explore phase the object is a plain <div> (not a button), so an aria-label
+      // needs an explicit role to be permitted (WCAG aria-prohibited-attr). It is a labelled
+      // piece of scenery → role="img". Buttons carry their own role.
+      if (!exploring) el.setAttribute("role", "img");
 
       const sprite = document.createElement("span");
       sprite.className = "stage-object-sprite";
-      sprite.textContent = objectSprite(obj.assetRef);
+      const emoji = objectSprite(obj.assetRef);
+      const objUrl = objectImageUrl(obj.assetRef);
+      if (objUrl) {
+        const img = document.createElement("img");
+        img.className = "sprite-png object";
+        img.src = objUrl;
+        img.alt = "";
+        img.draggable = false;
+        img.onerror = () => {
+          sprite.textContent = emoji;
+        };
+        sprite.appendChild(img);
+      } else {
+        sprite.textContent = emoji;
+      }
       el.appendChild(sprite);
 
       if (obj.label) {
@@ -263,7 +407,7 @@ export function renderGameView(
       if (exploring && onObject) {
         (el as HTMLButtonElement).onclick = () => onObject(obj.id);
       }
-      viewport.appendChild(el);
+      world.appendChild(el);
     }
 
     if (phase === "exploring") {
@@ -278,11 +422,12 @@ export function renderGameView(
         zone.style.width = `${(w / 1920) * 100}%`;
         zone.style.height = `${(h / 1080) * 100}%`;
         zone.onclick = () => onTrigger(trigger.target);
-        viewport.appendChild(zone);
+        world.appendChild(zone);
       }
     }
 
-    onWorldReady?.(viewport, scene, phase === "exploring");
+    viewport.appendChild(world);
+    onWorldReady?.(world, scene, phase === "exploring");
   }
 
   if (phase === "awaitingCompanion") {
@@ -299,7 +444,7 @@ export function renderGameView(
     (phase === "consequence" || phase === "decision" || phase === "exploring") &&
     counselorKey(counselor) !== dismissedCounselorKey
   ) {
-    root.appendChild(buildCounselorPanel(counselor));
+    root.appendChild(buildCounselorPanel(counselor, togetherMode, state.profile.companionName));
   }
 
   container.appendChild(root);
@@ -313,6 +458,10 @@ export function renderGameView(
       togetherMode,
       coPlayStep,
       onCoPlayReady,
+      {
+        childName: state.profile.childDisplayName,
+        companionName: state.profile.companionName,
+      },
     );
   } else if (dialogState && getDialog(dialogState.id)) {
     renderDialogOverlay(
@@ -321,6 +470,10 @@ export function renderGameView(
       dialogState.page,
       onDialogNext ?? (() => {}),
       onDialogClose ?? (() => {}),
+      {
+        childName: state.profile.childDisplayName,
+        companionName: state.profile.companionName,
+      },
     );
   } else {
     lastSpokenOverlayKey = null;
@@ -345,9 +498,52 @@ function counselorKey(counselor: CounselorPanelData): string {
   return `${counselor.title}|${counselor.child}|${counselor.parent}|${counselor.together ?? ""}`;
 }
 
-function buildCounselorPanel(counselor: CounselorPanelData): HTMLElement {
+/**
+ * Reflection panel.
+ *
+ * ⚠️ **Two different audiences, and they must not be mixed.**
+ *
+ * A child playing alone must never be shown that they are being assessed. Until now this
+ * panel rendered an "SEL Coach Insight" badge, a `For grown-ups:` paragraph carrying the
+ * clinical parent tip (e.g. *"Naming and questioning worry (ACT/CBT) reduces fusion with
+ * catastrophic thoughts for ages 5–8"*), and a "not a clinical diagnosis" disclaimer —
+ * all of it on screen, mid-game, to a five-year-old.
+ *
+ * That breaks the §1.1 stealth-learning pillar (the child should experience a story, not a
+ * test) and §12.4, which requires grown-up surfaces to be a *deliberately different* screen
+ * the child can tell at a glance is not for them. §7.7 makes the same argument about a HUD
+ * progress bar: chrome that "measures the child" turns a felt story into a task.
+ *
+ * So:
+ * - **Solo child play** → the companion speaks. One warm line, in their friend's voice.
+ *   No badge, no grown-up paragraph, no clinical disclaimer.
+ * - **Together Mode** → a parent is deliberately sitting alongside, so the coach framing and
+ *   the parent tip are appropriate and stay.
+ *
+ * Parent-facing content is not lost: it already has a proper home behind the parent gate in
+ * `renderJourneyReflection`, which is where a grown-up is actually the reader.
+ */
+function buildCounselorPanel(
+  counselor: CounselorPanelData,
+  togetherMode: boolean,
+  companionName: string,
+): HTMLElement {
   const panel = document.createElement("aside");
-  panel.className = "counselor-panel";
+  panel.className = togetherMode ? "counselor-panel" : "counselor-panel companion-note";
+
+  if (!togetherMode) {
+    // Child-facing: their companion reflecting with them, not a report about them.
+    panel.setAttribute("aria-label", `${companionName} says`);
+    panel.innerHTML = `
+      <div class="counselor-panel-header">
+        <div class="counselor-badge">${escapeText(companionName)}</div>
+        <button class="counselor-close" type="button" aria-label="Close message">✕</button>
+      </div>
+      <p class="counselor-child">${escapeText(counselor.child)}</p>
+    `;
+    return finishCounselorPanel(panel, counselor);
+  }
+
   panel.setAttribute("aria-label", "Counselor insight");
   panel.innerHTML = `
     <div class="counselor-panel-header">
@@ -360,6 +556,13 @@ function buildCounselorPanel(counselor: CounselorPanelData): HTMLElement {
     ${counselor.together ? `<p class="counselor-together"><strong>Try together:</strong> ${escapeText(counselor.together)}</p>` : ""}
     <p class="counselor-note">Supportive guidance — not a clinical diagnosis.</p>
   `;
+  return finishCounselorPanel(panel, counselor);
+}
+
+function finishCounselorPanel(
+  panel: HTMLElement,
+  counselor: CounselorPanelData,
+): HTMLElement {
 
   const applyPos = (left: number, top: number) => {
     panel.style.left = `${left}px`;
@@ -422,9 +625,13 @@ function renderDecisionOverlay(
   togetherMode = false,
   coPlayStep: CoPlayStep = "discuss",
   onCoPlayReady?: () => void,
+  names: { childName?: string; companionName?: string } = {},
 ): void {
   const dp = getDecisionPoint(decisionId);
   if (!dp) return;
+  // The prompt and choices are the most-read copy in the game, and they named the child
+  // and the companion literally. Fill in the names the child actually chose.
+  const prompt = personalize(dp.prompt, names);
 
   const overlay = document.createElement("div");
   overlay.className = "overlay";
@@ -469,7 +676,7 @@ function renderDecisionOverlay(
   }
 
   const title = document.createElement("h2");
-  title.textContent = dp.prompt;
+  title.textContent = prompt;
   panel.appendChild(title);
 
   let parentNote: HTMLTextAreaElement | null = null;
@@ -486,7 +693,7 @@ function renderDecisionOverlay(
     for (const opt of dp.options) {
       const btn = document.createElement("button");
       btn.className = "choice-btn";
-      btn.textContent = opt.label;
+      btn.textContent = personalize(opt.label, names);
       btn.onclick = () => {
         stopSpeaking();
         onChoice(decisionId, opt.id, parentNote?.value.trim() || undefined);
@@ -518,7 +725,7 @@ function renderDecisionOverlay(
 
   overlay.appendChild(panel);
   container.appendChild(overlay);
-  speakOverlayOnce(`${decisionId}:choose`, buildOverlayScript(dp));
+  speakOverlayOnce(`${decisionId}:choose`, buildOverlayScript(dp, names));
 }
 
 function renderDialogOverlay(
@@ -527,10 +734,13 @@ function renderDialogOverlay(
   pageIndex: number,
   onNext: () => void,
   onClose: () => void,
+  names: { childName?: string; companionName?: string } = {},
 ): void {
   const page = dialog.pages[Math.min(pageIndex, dialog.pages.length - 1)];
   const isLast = pageIndex >= dialog.pages.length - 1;
-  const speaker = page.speaker ?? dialog.speaker;
+  // The speaker label is authored copy too — a companion the child renamed must not be
+  // announced as "Flicker" on its own speech bubble.
+  const speaker = personalize(page.speaker ?? dialog.speaker ?? "", names) || undefined;
 
   const overlay = document.createElement("div");
   overlay.className = "overlay";
@@ -557,11 +767,27 @@ function renderDialogOverlay(
     if (dialog.speakerAssetRef) {
       const portrait = document.createElement("span");
       portrait.className = "dialog-portrait";
-      portrait.innerHTML = renderFullBodyCharacter({
+      const svg = renderFullBodyCharacter({
         id: "npc",
         assetRef: dialog.speakerAssetRef,
         size: 64,
       });
+      // Use the real AI PNG (e.g. Wize the owl) when the manifest has one, so the pop-up
+      // matches the in-world sprite; fall back to the SVG if it fails to load (spec §10.3).
+      const portraitUrl = characterImageUrl("npc", dialog.speakerAssetRef);
+      if (portraitUrl) {
+        const img = document.createElement("img");
+        img.src = portraitUrl;
+        img.alt = "";
+        img.draggable = false;
+        img.style.cssText = "width:64px;height:64px;object-fit:contain;display:block;";
+        img.onerror = () => {
+          portrait.innerHTML = svg;
+        };
+        portrait.appendChild(img);
+      } else {
+        portrait.innerHTML = svg;
+      }
       header.appendChild(portrait);
     }
     const name = document.createElement("span");
@@ -573,7 +799,8 @@ function renderDialogOverlay(
 
   const text = document.createElement("p");
   text.className = "dialog-text";
-  text.textContent = page.text;
+  const pageText = personalize(page.text, names);
+  text.textContent = pageText;
   panel.appendChild(text);
 
   const footer = document.createElement("div");
@@ -600,20 +827,23 @@ function renderDialogOverlay(
   overlay.appendChild(panel);
   container.appendChild(overlay);
   nextBtn.focus();
-  speakOverlayOnce(
-    `dialog:${dialog.id}:${pageIndex}`,
-    speaker ? `${speaker} says: ${page.text}` : page.text,
-  );
+  // Speak just the line, in the character's voice — no "Wize says:" narrator prefix, which
+  // reads as robotic instruction rather than a character talking to the child (who the
+  // speaker is is already shown by the portrait + name, and announced via the aria-label).
+  speakOverlayOnce(`dialog:${dialog.id}:${pageIndex}`, pageText);
 }
 
 /** Spoken version of a decision pop-up: the prompt, then each option in order. */
-function buildOverlayScript(dp: DecisionPoint): string {
-  const parts: string[] = [dp.prompt];
+function buildOverlayScript(
+  dp: DecisionPoint,
+  names: { childName?: string; companionName?: string } = {},
+): string {
+  const parts: string[] = [personalize(dp.prompt, names)];
   if (dp.options && dp.options.length > 0) {
     const ordinals = ["First choice", "Second choice", "Third choice", "Fourth choice"];
     parts.push("Your choices are:");
     dp.options.forEach((opt, i) => {
-      parts.push(`${ordinals[i] ?? `Choice ${i + 1}`}: ${opt.label}.`);
+      parts.push(`${ordinals[i] ?? `Choice ${i + 1}`}: ${personalize(opt.label, names)}.`);
     });
   }
   if (dp.inputMode === "typed" || dp.inputMode === "both") {
@@ -627,23 +857,41 @@ export function renderCelebration(
   chapterTitle: string,
   onReflect: () => void,
   onHub: () => void,
+  chapterId = "ch2",
+  sparks?: { found: number; total: number },
 ): void {
   container.innerHTML = "";
   const overlay = document.createElement("div");
   overlay.className = "overlay celebration-overlay";
   const celeb = document.createElement("div");
   celeb.className = "celebration mountain-celebration";
-  const celebCfg = contentConfig.celebration;
+  const celebCfg = celebrationFor(chapterId);
   celeb.style.backgroundImage = `url(${celebCfg.backgroundImage})`;
+
+  /**
+   * §7.6 — the spark tally is deliberately **not maxed** on a first play. That's the whole
+   * mechanism: the child sees what they missed, and the only way to find the rest is to
+   * explore and be kind. Framed as an invitation, never as a score or a failure.
+   */
+  const sparkLine =
+    sparks && sparks.total > 0
+      ? `<p class="celebration-sparks">✨ You found <strong>${sparks.found} of ${sparks.total}</strong> Kindness Sparks${
+          sparks.found < sparks.total
+            ? " — some only appear when you're kind or curious. Want to find the rest?"
+            : " — you found every single one!"
+        }</p>`
+      : "";
+
   celeb.innerHTML = `
     <div class="celebration-content">
       <div class="celebration-trophy">${escapeText(celebCfg.trophyLabel)}</div>
       <h1>${escapeText(celebCfg.title)}</h1>
       <p class="celebration-zone">${escapeText(chapterTitle)}</p>
-      <p class="celebration-lessons"><strong>Today Flicker learned:</strong> “${escapeText(celebCfg.flickerLesson)}”</p>
+      <p class="celebration-lessons"><strong>Today ${escapeText(celebCfg.companionName)} learned:</strong> “${escapeText(celebCfg.companionLesson)}”</p>
       <p class="celebration-lessons"><strong>Today you learned:</strong> “${escapeText(celebCfg.playerLesson)}”</p>
+      ${sparkLine}
       <ul class="achievement-checklist">
-        ${contentConfig.achievementChecklist.map((item) => `<li>✓ ${item}</li>`).join("")}
+        ${celebCfg.achievements.map((item) => `<li>✓ ${escapeText(item)}</li>`).join("")}
       </ul>
       <p class="celebration-quote">${escapeText(celebCfg.quote)}</p>
     </div>
@@ -653,7 +901,10 @@ export function renderCelebration(
   reflectBtn.className = "btn-primary";
   reflectBtn.style.maxWidth = "260px";
   reflectBtn.style.margin = "0 auto 10px";
-  reflectBtn.textContent = "See counselor insights";
+  // This button leads to the parent gate, so it is addressed to the grown-up, not the
+  // child — "counselor insights" told the child an assessment of them exists (§1.1, §12.4).
+  // §12.1 also frames the gate as a connection ritual rather than a report.
+  reflectBtn.textContent = "Grown-up corner";
   reflectBtn.onclick = onReflect;
   celeb.appendChild(reflectBtn);
 

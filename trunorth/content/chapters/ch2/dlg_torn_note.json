@@ -1,0 +1,14 @@
+{
+  "id": "dlg_torn_note",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "A scrap of paper, caught on a branch. Only one word survived: 'curious.'"
+    },
+    {
+      "text": "Maybe someone left it on purpose — a little reminder for whoever walks by next."
+    }
+  ]
+}

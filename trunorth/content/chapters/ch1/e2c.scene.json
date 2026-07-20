@@ -1,0 +1,174 @@
+{
+  "id": "e2c",
+  "chapterId": "ch1",
+  "order": 5,
+  "movementTier": "A",
+  "background": "bg_meadow",
+  "gridMapId": "everbright-meadow",
+  "narration": "Turning to share the flower, your elbow bumps the deer friend's flower crown and it tumbles into the grass. Their smile fades.",
+  "characters": [
+    {
+      "assetRef": "char_deer",
+      "id": "helper_deer",
+      "position": [
+        1120,
+        760
+      ],
+      "expression": "sad"
+    },
+    {
+      "assetRef": "char_companion_dragon",
+      "id": "companion",
+      "position": [
+        540,
+        780
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        760,
+        800
+      ],
+      "expression": "neutral"
+    }
+  ],
+  "triggers": [
+    {
+      "id": "repair_trigger",
+      "bounds": [
+        1020,
+        640,
+        200,
+        190
+      ],
+      "action": "startDecision",
+      "target": "dp_repair_oops"
+    }
+  ],
+  "collectibles": [
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2c_a",
+      "position": [
+        330,
+        700
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2c_kind",
+      "position": [
+        1420,
+        900
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_repair_oops"
+    },
+    {
+      "id": "crystal_e2c_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e2c_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1661,
+        805
+      ]
+    },
+    {
+      "id": "crystal_e2c_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        605,
+        556
+      ]
+    },
+    {
+      "id": "crystal_e2c_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1066,
+        956
+      ]
+    },
+    {
+      "id": "crystal_e2c_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1853,
+        643
+      ]
+    },
+    {
+      "id": "crystal_e2c_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1315,
+        286
+      ]
+    },
+    {
+      "id": "crystal_e2c_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1642,
+        545
+      ]
+    }
+  ],
+  "decisionPoints": [
+    "dp_repair_oops"
+  ],
+  "nextSceneId": "e3",
+  "goal": "Something got knocked over back here. Come on \u2014 let's find out what happened.",
+  "objects": [
+    {
+      "id": "obj_broken_crown",
+      "cell": [
+        20,
+        84
+      ],
+      "assetRef": "broken_crown",
+      "label": "The flower crown, come apart",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_broken_crown"
+      }
+    },
+    {
+      "id": "obj_scattered_petals",
+      "cell": [
+        80,
+        34
+      ],
+      "assetRef": "petals",
+      "label": "Scattered petals",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_scattered_petals"
+      }
+    }
+  ],
+  "spawnCell": [
+    9,
+    31
+  ]
+}

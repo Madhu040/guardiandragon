@@ -1,8 +1,9 @@
 import { Hono } from "hono";
 import Anthropic from "@anthropic-ai/sdk";
-import fallbacks from "../../content/fallbacks/companion-fallbacks.json";
+import fallbacks from "../../content/fallbacks/companion-fallbacks.json" with { type: "json" };
 import { filterInput, filterOutput } from "../../src/safety/filters.js";
 import { insightForStep } from "../../src/counselor/insights.js";
+import { scoreTypedResponse } from "../../src/counselor/typedScoring.js";
 import { serverConfig } from "../config.js";
 import type {
   CompanionRequest,
@@ -115,6 +116,11 @@ Boundaries (strict):
 - Never request PII, encourage secrecy from caregivers, or suggest real-world meetups.
 - Never give medical/clinical advice.
 - Use validating, growth-oriented language (feelings, skills, repair, bravery).
+- Judge CHOICES, never the child's character. Stay past-tense and situational ("I saw you
+  do that just now"). NEVER identity-claiming — do not say "you always...", "that's just
+  who you are", "you're so kind", or "that's your superpower". (Appendix A §4 item 11, §9.8
+  identity-framing guard: citing evidence builds confidence a child can verify; assigning an
+  identity lands as pressure.)
 ${together ? "- This is TOGETHER MODE: parent and child are playing side by side. Speak to both. Encourage their joint discussion. parentTip should coach the parent on how to reinforce the skill during co-play, not after the fact." : ""}
 
 Context:
@@ -126,6 +132,7 @@ Respond ONLY with JSON:
 {
   "scoreBand":"strong|partial|poor",
   "skill":"empathy|calm|courage|worry_brave|self_worth|adapting_to_change|friendship_repair",
+  "matchedCriterion":"short tag naming the rubric criterion this matched, e.g. 'offered inclusion'",
   "confidence":0.0-1.0,
   "companionLine":"max 120 chars, child-facing, warm${together ? " (may acknowledge parent+child teamwork)" : ""}",
   "counselorInsight":"2-3 sentences of reflective insight for the child (supportive, non-clinical)",
@@ -141,6 +148,12 @@ function parseModelResponse(text: string, req: CompanionRequest): CompanionRespo
     return {
       scoreBand: json.scoreBand ?? "partial",
       skill: json.skill ?? "empathy",
+      // §9.4 / §8.3: a typed score must cite the rubric criterion it matched. Previously
+      // dropped on the floor — the prompt didn't ask for it and this never read it, so the
+      // live path returned less than the offline rubric scorer.
+      matchedCriterion: typeof json.matchedCriterion === "string"
+        ? json.matchedCriterion.slice(0, 80)
+        : undefined,
       confidence: json.confidence ?? 0.7,
       companionLine: (json.companionLine ?? getFallback(req.decisionPointId, "partial")).slice(0, 120),
       counselorInsight: json.counselorInsight?.slice(0, 400),
@@ -160,27 +173,15 @@ function enrichWithLocalInsight(parsed: CompanionResponse, req: CompanionRequest
 }
 
 function scoreLocally(req: CompanionRequest, mode: "normal" | "timeout" = "normal"): CompanionResponse {
-  const text = (req.childInput ?? "").toLowerCase();
-  let band: ScoreBand = "partial";
-  if (
-    text.includes("scared") || text.includes("together") || text.includes("okay") ||
-    text.includes("feel") || text.includes("breath") || text.includes("invite") ||
-    text.includes("room for") || text.includes("check in") || text.includes("rematch")
-  ) {
-    band = "strong";
-  } else if (
-    text.includes("just") || text.includes("hurry") || text.includes("already") ||
-    text.includes("dramatic") || text.includes("pretend") || text.includes("don't tell") ||
-    text.includes("ruined")
-  ) {
-    band = "poor";
-  }
+  const score = scoreTypedResponse(req.childInput ?? "", req.typedRubricRef);
+  const band: ScoreBand = score.band;
 
   const insight = insightForStep(req.decisionPointId, band);
   return {
     scoreBand: band,
     skill: (insight.skillFocus === "general" ? "empathy" : insight.skillFocus) as SkillId,
-    confidence: mode === "timeout" ? 1 : 0.88,
+    matchedCriterion: mode === "timeout" ? undefined : score.matchedCriterion,
+    confidence: mode === "timeout" ? 1 : score.confidence,
     companionLine: mode === "timeout"
       ? getFallback(req.decisionPointId, "timeout")
       : insight.forChild.slice(0, 120),

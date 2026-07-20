@@ -16,7 +16,8 @@ export type ScenePhase =
   | "paused"
   | "parentGate";
 
-export type SkillId =
+/** The 7 canonical skills that each have a visible, persisted meter (spec §7.2). */
+export type MeterSkillId =
   | "empathy"
   | "calm"
   | "courage"
@@ -24,6 +25,16 @@ export type SkillId =
   | "adapting_to_change"
   | "friendship_repair"
   | "worry_brave";
+
+/**
+ * A scorable skill tag. Extends the metered skills with `ask_for_help`, a
+ * cross-cutting micro-skill (spec §7.2/§8.4) that is scored and logged to the
+ * event log but deliberately has NO meter of its own — it doubles as the
+ * distress-protocol on-ramp. The meter map (`GameState.meters`) is keyed by
+ * `MeterSkillId`, so a consequence that scores `ask_for_help` fills no meter
+ * (the resolver skips skills with no meter).
+ */
+export type SkillId = MeterSkillId | "ask_for_help";
 
 export type InputMode = "choice" | "typed" | "both";
 export type ThemeSensitivity = "standard" | "sensitive";
@@ -98,6 +109,17 @@ export interface SceneCollectible {
   assetRef: string;
   position: [number, number];
   kind: string;
+  /**
+   * Spec §7.6 — Kindness Sparks. A gated spark appears only **after** the child does
+   * something kind, so a second playthrough is "find what I missed" rather than "do the
+   * lesson again", and the only way to find them is to be curious and kind.
+   *
+   * Value is a decision-point id: the spark stays hidden until that decision has been
+   * resolved in the `strong` band.
+   *
+   * Hard constraint from §7.6: sparks are **never required to progress**. A child who
+   * ignores every spark still completes the chapter and gets the full experience.
+   */
   gate?: string;
 }
 
@@ -149,10 +171,34 @@ export interface Scene {
   characters: SceneCharacter[];
   triggers: SceneTrigger[];
   collectibles: SceneCollectible[];
+  /**
+   * What the child is trying to do in this scene, spoken by the companion on arrival.
+   *
+   * Without this the loop was: spawn -> walk into a hitbox -> answer. Movement had no
+   * purpose because nothing told the child there was anything to look for. A stated goal
+   * turns wandering into searching (spec §5 core loop; §7.7's "journeying through a world"
+   * rather than completing a task).
+   */
+  goal?: string;
   decisionPoints: string[];
   nextSceneId?: string;
   /** Grid level id (`src/content/gridLevels.ts`) — replaces the image background. */
   gridMapId?: string;
+  /**
+   * Where the child starts, as a `[col, row]` grid cell — overrides the level's own
+   * `spawnCell`.
+   *
+   * Levels are shared between scenes (all six ch1 scenes use `everbright-meadow`), but each
+   * scene puts its decision somewhere different, so a single per-level spawn left the child
+   * standing 174–372px from the answer — under a second of walking, with 71–86% of the map
+   * never visited. That is what made the game feel like a quiz with scenery. A per-scene
+   * spawn lets each scene start the child *across the level* from its own decision, so the
+   * route there is a real journey past the crystals and discoveries (§7.1).
+   *
+   * `validate-content` enforces that this cell is walkable and far enough from the scene's
+   * decision trigger for the walk to mean something.
+   */
+  spawnCell?: [number, number];
   /** Interactable stage objects placed on the level grid. */
   objects?: StageObject[];
 }
@@ -199,10 +245,12 @@ export interface GameState {
     chaptersCompleted: string[];
     browniePoints: number;
     kindnessSparksFound: Record<string, string[]>;
+    /** Stage objects the child has examined, per scene id — drives the discovery count. */
+    discoveries?: Record<string, string[]>;
     /** Latest pre-level check-in per chapter id. */
     checkins?: Record<string, CheckinRecord>;
   };
-  meters: Record<SkillId, { fill: number; level: number }>;
+  meters: Record<MeterSkillId, { fill: number; level: number }>;
   companion: { level: 1 | 2 | 3; appearanceRef: string };
   emotionalResidue: Record<string, Record<string, ResidueLevel>>;
   parentGate: { lastPassedChapter: string | null; pinHash?: string };
@@ -227,6 +275,8 @@ export interface CompanionRequest {
   companion: { name: string; archetype: string };
   playMode?: PlayMode;
   parentReflection?: string;
+  /** DecisionPoint.typedRubricRef — selects the offline typed-scoring rubric. */
+  typedRubricRef?: string;
 }
 
 export interface CompanionResponse {
@@ -278,7 +328,7 @@ export interface ChildProfile {
 }
 
 export function createDefaultMeters(): GameState["meters"] {
-  const skills: SkillId[] = [
+  const skills: MeterSkillId[] = [
     "empathy", "calm", "courage", "self_worth",
     "adapting_to_change", "friendship_repair", "worry_brave",
   ];

@@ -89,7 +89,7 @@ export function renderFullBodyCharacter(opts: {
   }
 }
 
-function resolveCharacterKey(id: string, assetRef?: string, archetype?: string): CharacterId {
+export function resolveCharacterKey(id: string, assetRef?: string, archetype?: string): CharacterId {
   if (id === "worry_cloud" || assetRef?.includes("worry")) return "worry_cloud";
   if (id === "wize" || assetRef?.includes("wize")) return "wize";
   if (id === "flicker" || assetRef?.includes("flicker")) return "companion_dragon";

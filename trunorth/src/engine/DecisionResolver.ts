@@ -2,8 +2,8 @@ import type {
   DecisionPoint,
   GameEvent,
   GameState,
+  MeterSkillId,
   ScoreBand,
-  SkillId,
 } from "../types/index.js";
 import { newId } from "../util/id.js";
 
@@ -24,7 +24,9 @@ export class DecisionResolver {
 
     if (consequence.meterDeltas) {
       for (const [skill, delta] of Object.entries(consequence.meterDeltas)) {
-        const meter = state.meters[skill as SkillId];
+        // `ask_for_help` is a scorable skill with no meter — the guard below
+        // makes scoring it a safe no-op on the meter map (spec §7.2).
+        const meter = state.meters[skill as MeterSkillId];
         if (meter) {
           meter.fill = Math.min(1, meter.fill + (delta as number));
           if (meter.fill >= 1) {

@@ -1,0 +1,16 @@
+{
+  "id": "dlg_bench_note",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "The note says: 'Back soon \u2014 ask anyone if you need me.'",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Grown-ups leave notes like that because they WANT to be asked.",
+      "speaker": "{companion}"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "id": "dlg_trail_stones",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "Someone stacked these to show the way for whoever came next.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Kindness leaves a trail too. You just left one.",
+      "speaker": "{companion}"
+    }
+  ]
+}

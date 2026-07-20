@@ -7,23 +7,202 @@
   "gridMapId": "everbright-meadow",
   "narration": "In the Meadow of Curiosity, a rabbit friend sits alone while others play. Your dragon companion notices they look left out.",
   "characters": [
-    { "assetRef": "char_leftout", "id": "leftout", "position": [1100, 760], "expression": "sad" },
-    { "assetRef": "char_companion_dragon", "id": "companion", "position": [520, 780], "expression": "neutral" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [700, 800], "expression": "neutral" },
-    { "assetRef": "char_deer", "id": "helper_deer", "position": [1350, 780], "expression": "neutral" }
-  ],
-  "triggers": [
-    { "id": "jamie_trigger", "bounds": [1000, 640, 200, 180], "action": "startDecision", "target": "dp_leftout_bench" }
-  ],
-  "collectibles": [],
-  "objects": [
     {
-      "id": "obj_meadow_sign",
-      "cell": [40, 76],
-      "assetRef": "sign_post",
-      "hint": "Press E to read",
-      "interaction": { "kind": "openDialog", "dialogId": "dlg_meadow_welcome" }
+      "assetRef": "char_leftout",
+      "id": "leftout",
+      "position": [
+        1100,
+        760
+      ],
+      "expression": "sad"
+    },
+    {
+      "assetRef": "char_companion_dragon",
+      "id": "companion",
+      "position": [
+        520,
+        780
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        700,
+        800
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_deer",
+      "id": "helper_deer",
+      "position": [
+        1350,
+        780
+      ],
+      "expression": "neutral"
     }
   ],
-  "decisionPoints": ["dp_leftout_bench"]
+  "triggers": [
+    {
+      "id": "jamie_trigger",
+      "bounds": [
+        1000,
+        640,
+        200,
+        180
+      ],
+      "action": "startDecision",
+      "target": "dp_leftout_bench"
+    }
+  ],
+  "collectibles": [
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e1_a",
+      "position": [
+        300,
+        760
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e1_b",
+      "position": [
+        1620,
+        880
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "crystal_e1_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e1_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        355,
+        427
+      ]
+    },
+    {
+      "id": "crystal_e1_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        566,
+        999
+      ]
+    },
+    {
+      "id": "crystal_e1_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1814,
+        373
+      ]
+    },
+    {
+      "id": "crystal_e1_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        797,
+        934
+      ]
+    },
+    {
+      "id": "crystal_e1_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        624,
+        340
+      ]
+    },
+    {
+      "id": "crystal_e1_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1238,
+        297
+      ]
+    }
+  ],
+  "objects": [
+    {
+      "id": "obj_flower_crown",
+      "cell": [
+        18,
+        68
+      ],
+      "assetRef": "flower_crown",
+      "label": "A half-made flower crown",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_flower_crown"
+      }
+    },
+    {
+      "id": "obj_lonely_ball",
+      "cell": [
+        78,
+        84
+      ],
+      "assetRef": "play_ball",
+      "label": "A ball, sitting still",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_lonely_ball"
+      }
+    },
+    {
+      "id": "obj_deer_tracks",
+      "cell": [
+        82,
+        52
+      ],
+      "assetRef": "deer_friend",
+      "label": "The deer is watching something",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_deer_tracks"
+      }
+    },
+    {
+      "id": "obj_meadow_sign",
+      "cell": [
+        22,
+        84
+      ],
+      "assetRef": "sign_post",
+      "hint": "Press E to read",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_meadow_welcome"
+      }
+    }
+  ],
+  "decisionPoints": [
+    "dp_leftout_bench"
+  ],
+  "goal": "Hey {name} \u2014 someone's crying over by the bench. Come on, let's go see if they're okay.",
+  "spawnCell": [
+    9,
+    31
+  ]
 }

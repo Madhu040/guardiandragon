@@ -1,0 +1,14 @@
+{
+  "id": "dlg_paw_prints",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "Someone padded through here not long ago — the moss is still pressed flat."
+    },
+    {
+      "text": "Tracks don't tell you what happened. They just make you wonder. That's a question, not a fear."
+    }
+  ]
+}

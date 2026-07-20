@@ -5,27 +5,187 @@
   "movementTier": "B",
   "background": "bg_forest",
   "gridMapId": "forest-of-questions",
-  "narration": "In Everbright, young explorer Nova dreams of the Sky Festival. To join, Nova must collect five Star Crystals. Flicker — a small, fuzzy Guardian Dragon — appears with worried eyes. \"Wait! What if it goes badly?\"",
+  "narration": "In Everbright, young explorer Nova dreams of the Sky Festival. To join, Nova must collect five Star Crystals. Flicker \u2014 a small, fuzzy Guardian Dragon \u2014 appears with worried eyes. \"Wait! What if it goes badly?\"",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [520, 760], "expression": "calm" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [720, 800], "expression": "happy" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [960, 700], "expression": "worried", "solidSize": [190, 80] }
+    {
+      "assetRef": "char_wize",
+      "id": "companion",
+      "position": [
+        520,
+        760
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        720,
+        800
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_flicker_dragon",
+      "id": "flicker",
+      "position": [
+        960,
+        700
+      ],
+      "expression": "worried",
+      "solidSize": [
+        190,
+        80
+      ]
+    }
   ],
   "triggers": [
-    { "id": "quest_trigger", "bounds": [440, 640, 400, 220], "action": "startDecision", "target": "dp_quest_start" }
+    {
+      "id": "quest_trigger",
+      "bounds": [
+        440,
+        640,
+        400,
+        220
+      ],
+      "action": "startDecision",
+      "target": "dp_quest_start"
+    }
   ],
   "collectibles": [
-    { "id": "spark_start", "assetRef": "collectible_spark", "position": [280, 840], "kind": "kindness_spark" }
+    {
+      "id": "spark_start",
+      "assetRef": "collectible_spark",
+      "position": [
+        280,
+        840
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "spark_quest_kind",
+      "assetRef": "collectible_spark",
+      "position": [
+        1700,
+        780
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_quest_start"
+    },
+    {
+      "id": "crystal_w1_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        86,
+        157
+      ]
+    },
+    {
+      "id": "crystal_w1_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1373,
+        448
+      ]
+    },
+    {
+      "id": "crystal_w1_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1526,
+        999
+      ]
+    },
+    {
+      "id": "crystal_w1_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1814,
+        416
+      ]
+    },
+    {
+      "id": "crystal_w1_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1795,
+        956
+      ]
+    },
+    {
+      "id": "crystal_w1_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        490,
+        394
+      ]
+    },
+    {
+      "id": "crystal_w1_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        989,
+        902
+      ]
+    }
   ],
   "objects": [
     {
       "id": "obj_star_notice",
-      "cell": [70, 80],
+      "cell": [
+        70,
+        80
+      ],
       "assetRef": "notice_scroll",
       "hint": "Press E to read",
-      "interaction": { "kind": "openDialog", "dialogId": "dlg_star_legend" }
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_star_legend"
+      }
+    },
+    {
+      "id": "obj_paw_prints",
+      "cell": [
+        20,
+        85
+      ],
+      "assetRef": "trail_marker",
+      "label": "Fresh tracks in the moss",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_paw_prints"
+      }
+    },
+    {
+      "id": "obj_rustling_bush",
+      "cell": [
+        86,
+        73
+      ],
+      "assetRef": "bush",
+      "label": "A bush, rustling on its own",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_rustling_bush"
+      }
     }
   ],
-  "decisionPoints": ["dp_quest_start"],
-  "nextSceneId": "w2"
+  "decisionPoints": [
+    "dp_quest_start"
+  ],
+  "nextSceneId": "w2",
+  "goal": "I'm already nervous and we haven't even started. Stay with me, {name} \u2014 let's look around before we decide anything.",
+  "spawnCell": [
+    90,
+    31
+  ]
 }

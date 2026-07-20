@@ -1,6 +1,6 @@
 {
   "id": "dp_breathe",
-  "prompt": "Flicker feels left out. Show kindness \u2014 each choice restores a little color. How do you welcome Flicker?",
+  "prompt": "{companion} feels left out. Show kindness \u2014 each choice restores a little color. How do you welcome {companion}?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
   "selSkills": [
@@ -11,7 +11,7 @@
   "options": [
     {
       "id": "kind_1",
-      "label": "\u2764\ufe0f Hug Flicker",
+      "label": "\u2764\ufe0f Hug {companion}",
       "selScore": "partial"
     },
     {
@@ -26,7 +26,7 @@
     },
     {
       "id": "kind_4",
-      "label": "\ud83c\udf88 Sit beside Flicker",
+      "label": "\ud83c\udf88 Sit beside {companion}",
       "selScore": "partial"
     },
     {

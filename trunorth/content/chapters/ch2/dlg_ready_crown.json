@@ -1,0 +1,14 @@
+{
+  "id": "dlg_ready_crown",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "A crown of mountain flowers, finished and waiting for whoever reaches the stage."
+    },
+    {
+      "text": "It doesn't ask if you're scared. It just waits for you to arrive."
+    }
+  ]
+}

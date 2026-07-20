@@ -3,6 +3,7 @@ import { SCENARIOS } from "../content/scenarios.js";
 import { getScene } from "../content/index.js";
 import { getGridLevel } from "../content/gridLevels.js";
 import { createGridThumbnail } from "../render/gridBackground.js";
+import { backgroundImageUrl } from "../content/assetManifest.js";
 import { zoneForChapter } from "../content/zones.js";
 import { appConfig } from "../config/app.js";
 import {
@@ -12,11 +13,12 @@ import {
   checkinPlacementLabel,
   checkinCompanionLine,
   CHECKIN_DISTRESS_LINE,
+  RESUME_DISTRESS,
   type CheckinAnswer,
 } from "../counselor/checkin.js";
 import type { ScenarioMeta, CheckinRecord } from "../types/index.js";
 
-type Screen = "landing" | "login" | "register" | "dashboard";
+type Screen = "landing" | "login" | "register";
 
 export function renderLanding(
   container: HTMLElement,
@@ -369,6 +371,67 @@ export function renderCheckin(
   container.appendChild(surface);
 }
 
+/**
+ * Distress-aware re-entry (spec §17D). Shown at boot ONLY when the previous
+ * session ended with `safetyFlag: distress`, in place of the standard
+ * welcome-back. It is a calm, low-pressure on-ramp — never scored, never
+ * gamified, and it never surfaces the distress to the child as a "status."
+ * Copy is SME-draft (see `RESUME_DISTRESS`).
+ */
+export function renderResumeCheckin(
+  container: HTMLElement,
+  companionName: string,
+  onContinue: () => void,
+): void {
+  container.innerHTML = "";
+  const surface = document.createElement("div");
+  surface.className = "onboarding";
+  const card = document.createElement("div");
+  card.className = "onboarding-card checkin-card";
+
+  const compass = document.createElement("div");
+  compass.className = "checkin-compass";
+  compass.setAttribute("aria-hidden", "true");
+  compass.textContent = "🫂";
+  card.appendChild(compass);
+
+  const line = document.createElement("p");
+  line.className = "checkin-companion-line";
+  line.textContent = `${companionName}: ${RESUME_DISTRESS.opening}`;
+  card.appendChild(line);
+
+  const actions = document.createElement("div");
+  actions.className = "checkin-resume-actions";
+
+  const keepGoing = document.createElement("button");
+  keepGoing.className = "btn-primary";
+  keepGoing.textContent = RESUME_DISTRESS.continueLabel;
+  keepGoing.onclick = onContinue;
+
+  const sit = document.createElement("button");
+  sit.className = "btn-secondary";
+  sit.textContent = RESUME_DISTRESS.sitLabel;
+  sit.onclick = () => {
+    // "Sit here for a bit" — a calm pause, then a single low-pressure way
+    // forward. Doing nothing is a valid choice; this never scores or advances
+    // the child anywhere they didn't ask to go.
+    line.textContent = `${companionName}: ${RESUME_DISTRESS.sitAwhile}`;
+    actions.innerHTML = "";
+    const ready = document.createElement("button");
+    ready.className = "btn-primary";
+    ready.textContent = RESUME_DISTRESS.readyLabel;
+    ready.onclick = onContinue;
+    actions.appendChild(ready);
+  };
+
+  actions.appendChild(keepGoing);
+  actions.appendChild(sit);
+  card.appendChild(actions);
+
+  surface.appendChild(card);
+  container.appendChild(surface);
+}
+
 export function isAuthenticated(): boolean {
   return !!getToken();
 }
@@ -420,7 +483,19 @@ export function renderScenarioHub(
     `;
     const gridId = getScene(scenario.startSceneId)?.gridMapId;
     const gridLevel = gridId ? getGridLevel(gridId) : null;
-    if (gridLevel) {
+    const artUrl = gridLevel ? backgroundImageUrl(gridLevel.id) : null;
+    if (gridLevel && artUrl) {
+      // The real AI background art on the card, matching what the scene renders in-game —
+      // far more inviting than the raw pixel walk-map. Falls back to the grid thumbnail if
+      // the PNG is missing/broken, same live-fallback contract as in-game (spec §10.3).
+      const art = document.createElement("img");
+      art.className = "zone-thumb";
+      art.src = artUrl;
+      art.alt = "";
+      art.draggable = false;
+      art.onerror = () => art.replaceWith(createGridThumbnail(gridLevel));
+      card.prepend(art);
+    } else if (gridLevel) {
       card.prepend(createGridThumbnail(gridLevel));
     } else {
       const zone = zoneForChapter(scenario.id);

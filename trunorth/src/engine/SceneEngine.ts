@@ -13,8 +13,9 @@ import {
 } from "../content/index.js";
 import { DecisionResolver } from "./DecisionResolver.js";
 import type { CompanionClient } from "../companion/CompanionClient.js";
+import { API_RETRY_LINE, fallbackLine } from "../companion/fallbackLines.js";
 import type { ProgressStore } from "../types/index.js";
-import { childFacingLine, insightForStep } from "../counselor/insights.js";
+import { insightForStep } from "../counselor/insights.js";
 import { appConfig } from "../config/app.js";
 
 export interface EngineCallbacks {
@@ -28,6 +29,8 @@ export interface EngineCallbacks {
     together?: string;
   }) => void;
   onMeterJuice: (skill: string) => void;
+  /** Fires for every resolved decision, before the strong-only onMeterJuice (spec §17B.4). */
+  onDecisionBand: (band: ScoreBand) => void;
   onCelebration: () => void;
   onError: (message: string) => void;
 }
@@ -135,6 +138,7 @@ export class SceneEngine {
     try {
       const response = await this.companion.request(
         this.buildCompanionRequest(dp, text, "typed", parentReflection),
+        this.retryHooks(),
       );
       this.state.flags.lastSafetyFlag = response.safetyFlag;
       this.callbacks.onCompanionLine(response.companionLine);
@@ -145,7 +149,10 @@ export class SceneEngine {
       }
       await this.resolveDecision(dp, response.scoreBand, undefined, response.skill);
     } catch {
-      this.callbacks.onCompanionLine("Let's keep going — you're doing great.");
+      // §17D: the retry has already happened and still failed. Fall to the hand-authored
+      // line for this decision (§17B.9 guard 3) and keep the story moving — never a raw
+      // error, never a dead end.
+      this.callbacks.onCompanionLine(fallbackLine(dp.id, "timeout"));
       this.emitInsight(dp, "partial");
       await this.resolveDecision(dp, "partial");
     } finally {
@@ -164,6 +171,7 @@ export class SceneEngine {
     try {
       const response = await this.companion.request(
         this.buildCompanionRequest(dp, childInput, "choice", parentReflection),
+        this.retryHooks(),
       );
       this.callbacks.onCompanionLine(response.companionLine);
       if (response.counselorInsight || response.parentTip) {
@@ -172,14 +180,23 @@ export class SceneEngine {
         this.emitInsight(dp, fallbackBand);
       }
     } catch {
+      // Same §17D path as submitTyped: authored copy, not a generated or generic string.
       this.emitInsight(dp, fallbackBand);
-      const insight = insightForStep(dp.id, fallbackBand);
-      this.callbacks.onCompanionLine(
-        childFacingLine(insight, this.state.profile.companionName).slice(0, 160),
-      );
+      this.callbacks.onCompanionLine(fallbackLine(dp.id, fallbackBand));
     } finally {
       this.freezeInput(false);
     }
+  }
+
+  /**
+   * Spec §17D — while the single auto-retry is in flight, the companion says something
+   * in-character rather than the child watching a spinner. The engine stays in
+   * `awaitingCompanion` with input frozen (§17B.9 guard 1) throughout.
+   */
+  private retryHooks() {
+    return {
+      onRetry: () => this.callbacks.onCompanionLine(API_RETRY_LINE),
+    };
   }
 
   private buildCompanionRequest(
@@ -201,6 +218,7 @@ export class SceneEngine {
         name: this.state.profile.companionName,
         archetype: this.state.profile.companionArchetype,
       },
+      ...(dp.typedRubricRef ? { typedRubricRef: dp.typedRubricRef } : {}),
       ...(together ? { playMode: "together" as const } : {}),
       ...(together && parentReflection ? { parentReflection } : {}),
     };
@@ -236,6 +254,7 @@ export class SceneEngine {
     skill?: string,
   ): Promise<void> {
     this.setPhase("consequence");
+    this.callbacks.onDecisionBand(band);
     const { nextSceneId, repairAction } = this.resolver.applyConsequence(this.state, dp, band);
 
     if (band === "strong") {

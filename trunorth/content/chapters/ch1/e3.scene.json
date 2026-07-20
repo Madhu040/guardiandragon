@@ -7,24 +7,180 @@
   "gridMapId": "everbright-meadow",
   "narration": "A trusted grown-up walks through the meadow. Asking for help is brave too.",
   "characters": [
-    { "assetRef": "char_grownup", "id": "grownup", "position": [1180, 760], "expression": "calm" },
-    { "assetRef": "char_leftout", "id": "leftout", "position": [820, 760], "expression": "happy" },
-    { "assetRef": "char_companion_dragon", "id": "companion", "position": [600, 780], "expression": "neutral" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [700, 800], "expression": "neutral" }
+    {
+      "assetRef": "char_grownup",
+      "id": "grownup",
+      "position": [
+        1180,
+        760
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_leftout",
+      "id": "leftout",
+      "position": [
+        820,
+        760
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_companion_dragon",
+      "id": "companion",
+      "position": [
+        600,
+        780
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        700,
+        800
+      ],
+      "expression": "neutral"
+    }
   ],
   "triggers": [
-    { "id": "grownup_trigger", "bounds": [1080, 620, 200, 200], "action": "startDecision", "target": "dp_ask_grownup" }
+    {
+      "id": "grownup_trigger",
+      "bounds": [
+        1080,
+        620,
+        200,
+        200
+      ],
+      "action": "startDecision",
+      "target": "dp_ask_grownup"
+    }
   ],
-  "collectibles": [],
+  "collectibles": [
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e3_a",
+      "position": [
+        1560,
+        720
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "crystal_e3_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e3_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1162,
+        265
+      ]
+    },
+    {
+      "id": "crystal_e3_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        739,
+        373
+      ]
+    },
+    {
+      "id": "crystal_e3_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1795,
+        524
+      ]
+    },
+    {
+      "id": "crystal_e3_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        144,
+        751
+      ]
+    },
+    {
+      "id": "crystal_e3_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        950,
+        956
+      ]
+    },
+    {
+      "id": "crystal_e3_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1546,
+        167
+      ]
+    }
+  ],
   "objects": [
     {
+      "id": "obj_help_bell",
+      "cell": [
+        28,
+        50
+      ],
+      "assetRef": "bell",
+      "label": "A little bell",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_help_bell"
+      }
+    },
+    {
+      "id": "obj_bench_note",
+      "cell": [
+        72,
+        78
+      ],
+      "assetRef": "note",
+      "label": "A note on the bench",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_bench_note"
+      }
+    },
+    {
       "id": "obj_meadow_arch",
-      "cell": [42, 7],
+      "cell": [
+        42,
+        7
+      ],
       "assetRef": "arch",
       "label": "Celebration Arch",
       "hint": "Press E to finish the adventure",
-      "interaction": { "kind": "finish", "mode": "complete" }
+      "interaction": {
+        "kind": "finish",
+        "mode": "complete"
+      }
     }
   ],
-  "decisionPoints": ["dp_ask_grownup"]
+  "decisionPoints": [
+    "dp_ask_grownup"
+  ],
+  "goal": "This one feels too big for just us, {name}. Let's go find a grown-up who can help.",
+  "spawnCell": [
+    9,
+    31
+  ]
 }

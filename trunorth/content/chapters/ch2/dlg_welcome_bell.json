@@ -1,0 +1,14 @@
+{
+  "id": "dlg_welcome_bell",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "An old bell, a little rusty, still hanging where someone hung it."
+    },
+    {
+      "text": "It used to ring whenever a Guardian Dragon was invited to sit close. Quiet today — but it still works."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "id": "dp_crossing",
-  "prompt": "Sky Festival stage ahead. Flicker shakes. Nova shakes. Take the feeling with you \u2014 one step at a time.",
+  "prompt": "Sky Festival stage ahead. {companion} shakes. {name} shakes. Take the feeling with you \u2014 one step at a time.",
   "inputMode": "choice",
   "themeSensitivity": "standard",
   "selSkills": [
@@ -20,7 +20,7 @@
     },
     {
       "id": "step_3",
-      "label": "Step 3 \u2014 Stand on stage with Flicker",
+      "label": "Step 3 \u2014 Stand on stage with {companion}",
       "selScore": "partial"
     },
     {

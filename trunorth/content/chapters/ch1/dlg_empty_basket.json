@@ -1,0 +1,16 @@
+{
+  "id": "dlg_empty_basket",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "Someone's basket, still empty. They waited their turn and missed out.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Waiting politely doesn't always work out. Somebody has to notice.",
+      "speaker": "{companion}"
+    }
+  ]
+}

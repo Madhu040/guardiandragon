@@ -1,0 +1,14 @@
+{
+  "id": "dlg_gathering_basket",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "An empty basket, sitting in the grass. Somebody meant to fill it and got distracted."
+    },
+    {
+      "text": "Maybe by a worry-flower. Maybe by something more interesting. Baskets can wait."
+    }
+  ]
+}

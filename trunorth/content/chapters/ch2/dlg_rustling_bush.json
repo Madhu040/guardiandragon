@@ -1,0 +1,14 @@
+{
+  "id": "dlg_rustling_bush",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "Something's moving in there. Could be the wind. Could be a rabbit. Could be nothing at all."
+    },
+    {
+      "text": "{companion} wants to guess the scariest answer first. I'd rather go look and let the bush tell us."
+    }
+  ]
+}

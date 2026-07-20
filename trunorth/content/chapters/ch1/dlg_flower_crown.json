@@ -1,0 +1,16 @@
+{
+  "id": "dlg_flower_crown",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "Someone was weaving this... and then just stopped. The petals are still fresh.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Whoever made it wanted to give it to somebody, I think.",
+      "speaker": "{companion}"
+    }
+  ]
+}

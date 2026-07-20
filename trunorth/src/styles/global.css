@@ -1,7 +1,40 @@
+/*
+ * Self-hosted variable fonts (SIL Open Font License) — Nunito for the child-facing
+ * surface, Inter for parent/grown-up surfaces.
+ *
+ * These are bundled rather than loaded from Google Fonts so the showcase runs with no
+ * internet at all (spec §13A.3) and demo mode makes zero external asset fetches
+ * (§13A.1). Both are single variable files covering the whole weight range.
+ * `font-display: swap` keeps first paint immediate.
+ */
+@font-face {
+  font-family: "Nunito";
+  src: url("/fonts/nunito-latin-var.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/inter-latin-var.woff2") format("woff2");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-dark: #1a0a2e;
   --bg-parent: #2d1b4e;
   --accent: #9d4edd;
+  /**
+   * Accent for use as a BACKGROUND BEHIND TEXT (spec §20 — 4.5:1 dialogue contrast).
+   * `--accent` itself is only 4.58:1 against white and 2.36:1 against `--text-dark`, so
+   * text sitting directly on it either scraped past AA or failed it outright. This deeper
+   * purple gives ~10:1 against white; use it wherever a filled accent button/pill carries
+   * a label, and keep `--accent` for borders, glows, fills and icon strokes.
+   */
+  --accent-deep: #5a189a;
   --accent-warm: #ffd60a;
   --accent-glow: #ffd60a;
   --tru-purple: #7b2cbf;
@@ -16,6 +49,21 @@
   --font-child: "Nunito", system-ui, sans-serif;
   --font-parent: "Inter", system-ui, sans-serif;
   --hit-target: 64px;
+  /*
+   * A `--px`-equivalent for DOM overlaid at the app root rather than nested inside
+   * `.game-viewport`. `--px` (below) is `cqw`-based, and `cqw` only resolves on actual
+   * DOM *descendants* of the element with `container-type: size` — but every overlay
+   * (decision, dialog, celebration, parent gate…) is mounted as a *sibling* of
+   * `.game-viewport`, appended straight to the app root by `container.appendChild(overlay)`
+   * in GameView.ts. `var(--px)` silently fails to resolve there (an invalid `calc()`
+   * drops the whole declaration), which is exactly how the original projector-scaling bug
+   * shipped invisibly. This reproduces `.game-viewport`'s own sizing formula
+   * (`min(100vw, 100vh * 16/9)`, its rendered width in px) directly in viewport units, so
+   * it's mathematically identical to `--px` at the same screen size — not an approximation
+   * — and works from anywhere in the DOM since `:root` custom properties always inherit,
+   * with no container-query scoping required.
+   */
+  --overlay-px: calc(min(100vw, 100vh * 16 / 9) / 1920);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -52,6 +100,19 @@ body {
   --px: 0.0520833cqw;
 }
 
+/**
+ * Camera layer — holds all world-space content (background, characters, objects, sparks,
+ * hotspots, move hint). WorldRuntime transforms this to follow the avatar (see applyCamera).
+ * Same box as the viewport, so children keep their existing `%` positions; the viewport
+ * clips it (overflow:hidden already). Screen chrome stays on the viewport, outside this.
+ */
+.world-layer {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
 .scene-bg {
   position: absolute;
   inset: 0;
@@ -74,6 +135,16 @@ body {
   width: 100%;
   height: 100%;
   image-rendering: pixelated;
+}
+
+/* AI background art layered over the canvas walk-map (see assetManifest.ts). */
+.grid-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
 }
 
 .scene-bg::after {
@@ -152,6 +223,13 @@ body {
   height: auto;
 }
 
+/* AI character PNG in place of the SVG sprite — same box, same drop-shadow. */
+.char-fullbody .sprite-png {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .char-fullbody.glow {
   filter: drop-shadow(0 0 16px rgba(233, 196, 106, 0.85)) drop-shadow(0 6px 10px rgba(0,0,0,0.2));
 }
@@ -218,6 +296,32 @@ body {
   z-index: 70;
   max-height: 42vh;
   overflow: auto;
+}
+
+/**
+ * Child-facing variant: this is the companion talking to their friend, not a report card.
+ * Warmer, softer, no clinical chrome. The grown-up version keeps the coach styling above
+ * and only appears in Together Mode, where a parent is deliberately watching (§12.4, §1.1).
+ */
+.counselor-panel.companion-note {
+  background: linear-gradient(180deg, rgba(255,252,245,0.97), rgba(255,246,224,0.97));
+  border: 2px solid rgba(255, 214, 10, 0.55);
+  border-radius: 20px;
+  max-height: 30vh;
+}
+
+.counselor-panel.companion-note .counselor-badge {
+  background: var(--tru-gold);
+  color: #4a2c00;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.counselor-panel.companion-note .counselor-child {
+  font-size: clamp(13px, calc(19 * var(--px)), 19px);
+  line-height: 1.5;
+  margin-bottom: 0;
+  font-weight: 600;
 }
 
 /* Drag handle for the whole panel (body keeps overflow:auto scrolling). */
@@ -467,16 +571,60 @@ body {
   z-index: 10;
 }
 
+/**
+ * Skill meter — §7.2 "each meter has visible fill state and level thresholds", and
+ * §17A.4 "meter changes animate visibly and are large enough to read from across a room".
+ *
+ * This was a static emoji circle with a fixed border: filling a skill changed nothing on
+ * screen, so the §17B.2 particle flight arrived at a target that never responded. The
+ * conic-gradient ring is the fill, driven by `--fill` (0-100) set in GameView. Enlarged
+ * because §13A.4 asks for legibility from ~15m on a projector.
+ */
 .meter {
-  width: clamp(30px, calc(48 * var(--px)), 48px);
-  height: clamp(30px, calc(48 * var(--px)), 48px);
+  position: relative;
+  width: clamp(42px, calc(68 * var(--px)), 68px);
+  height: clamp(42px, calc(68 * var(--px)), 68px);
   border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.3);
   display: grid;
   place-items: center;
-  font-size: clamp(0.75rem, calc(19 * var(--px)), 1.2rem);
-  background: rgba(0,0,0,0.3);
-  transition: transform 0.3s ease;
+  font-size: clamp(1rem, calc(26 * var(--px)), 1.6rem);
+  background:
+    conic-gradient(var(--tru-gold) calc(var(--fill, 0) * 1%), rgba(255,255,255,0.16) 0);
+  transition: transform 0.3s ease, background 0.6s ease;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+}
+
+/* Inner disc, so the gradient reads as a ring rather than a filled pie. */
+.meter::before {
+  content: "";
+  position: absolute;
+  inset: clamp(4px, calc(7 * var(--px)), 7px);
+  border-radius: 50%;
+  background: rgba(20, 10, 34, 0.86);
+}
+
+.meter-face {
+  position: relative;
+  z-index: 1;
+  line-height: 1;
+}
+
+.meter-level {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  z-index: 2;
+  min-width: clamp(16px, calc(24 * var(--px)), 24px);
+  height: clamp(16px, calc(24 * var(--px)), 24px);
+  padding: 0 3px;
+  border-radius: 999px;
+  background: var(--tru-gold);
+  color: #4a2c00;
+  font-size: clamp(9px, calc(14 * var(--px)), 14px);
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 .meter.juice { transform: scale(1.2); animation: meterPop 0.5s ease; }
@@ -542,6 +690,21 @@ body {
 
 .voice-toggle:hover { background: rgba(0,0,0,0.6); }
 
+.sfx-toggle {
+  position: absolute;
+  top: max(78px, calc(92 * var(--px)));
+  right: max(8px, calc(12 * var(--px)));
+  background: rgba(0,0,0,0.4);
+  border: none;
+  padding: calc(6 * var(--px)) calc(10 * var(--px));
+  border-radius: 999px;
+  font-size: clamp(12px, calc(16 * var(--px)), 16px);
+  cursor: pointer;
+  z-index: 10;
+}
+
+.sfx-toggle:hover { background: rgba(0,0,0,0.6); }
+
 .coplay-badge {
   display: inline-block;
   background: #2a9d8f;
@@ -579,17 +742,32 @@ body {
   padding: 20px;
 }
 
+/*
+ * The decision overlay — panel, prompt, and choices — used to be sized in fixed px while
+ * everything else on stage (characters, HUD) scales with `--px`. A projector e2e audit
+ * (2026-07-19) caught it: the choice button measured the identical 452×64px / 16px text at
+ * 1024×768, 1366×768 *and* 1920×1080. It sat exactly on the §17A.4 64px/16px floors
+ * everywhere, so nothing *failed* — but on a large venue projector, the single surface the
+ * audience is actually watching was proportionally the smallest thing on screen, cutting
+ * against §13A.4 "readable from 50 feet". Every `clamp()` below has a floor pinned to the
+ * real spec minimum (never regress below it, at any screen size) and a design-reference
+ * value at `--px` matching (or, for the youngest-band text sizes, slightly exceeding —
+ * Master Spec §21/§17B.5 recommends ≥20–24px dialogue text for the Ch.1 (5–7) band, above
+ * the flat 16px floor) what shipped before, so the *reference* look at 1920×1080 is
+ * unchanged; the only new behaviour is that it now grows past that on a bigger stage,
+ * exactly the way a character or HUD meter already did.
+ */
 .choice-panel {
   background: var(--text-light);
   color: var(--text-dark);
   border-radius: 20px;
-  padding: 24px;
-  max-width: 500px;
+  padding: clamp(18px, calc(24 * var(--overlay-px)), 32px);
+  max-width: clamp(320px, calc(500 * var(--overlay-px)), 640px);
   width: 100%;
 }
 
 .choice-panel h2 {
-  font-size: 20px;
+  font-size: clamp(18px, calc(24 * var(--overlay-px)), 30px);
   margin-bottom: 16px;
   line-height: 1.4;
 }
@@ -597,14 +775,15 @@ body {
 .choice-btn {
   display: block;
   width: 100%;
-  min-height: var(--hit-target);
-  padding: 14px 20px;
+  min-height: clamp(var(--hit-target), calc(72 * var(--overlay-px)), 96px);
+  padding: clamp(12px, calc(16 * var(--overlay-px)), 22px)
+    clamp(16px, calc(22 * var(--overlay-px)), 28px);
   margin-bottom: 10px;
   border: 2px solid #ddd;
   border-radius: 14px;
   background: white;
   font-family: var(--font-child);
-  font-size: 16px;
+  font-size: clamp(16px, calc(20 * var(--overlay-px)), 26px);
   cursor: pointer;
   text-align: left;
   transition: border-color 0.2s, background 0.2s;
@@ -622,23 +801,25 @@ body {
 
 .typed-input {
   width: 100%;
-  padding: 12px;
+  padding: clamp(10px, calc(12 * var(--overlay-px)), 16px);
   border: 2px solid #ddd;
   border-radius: 10px;
   font-family: var(--font-child);
-  font-size: 16px;
+  font-size: clamp(16px, calc(18 * var(--overlay-px)), 22px);
   margin-bottom: 10px;
 }
 
 .typed-submit {
   width: 100%;
-  min-height: 48px;
-  background: var(--accent);
+  /* Was a fixed 48px — below the §17A.4 64px floor for the Ch.1 band on its own, quite
+     apart from the projector-scaling fix above. */
+  min-height: clamp(var(--hit-target), calc(64 * var(--overlay-px)), 88px);
+  background: var(--accent-deep);
   color: white;
   border: none;
   border-radius: 12px;
   font-family: var(--font-child);
-  font-size: 16px;
+  font-size: clamp(16px, calc(18 * var(--overlay-px)), 22px);
   font-weight: 700;
   cursor: pointer;
 }
@@ -648,7 +829,7 @@ body {
   bottom: max(48px, calc(80 * var(--px)));
   left: 50%;
   transform: translateX(-50%);
-  background: var(--accent);
+  background: var(--accent-deep);
   color: white;
   padding: calc(10 * var(--px)) calc(20 * var(--px));
   border-radius: 999px;
@@ -789,8 +970,8 @@ body {
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background: var(--accent);
-  color: var(--text-dark);
+  background: var(--accent-deep);
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -835,6 +1016,8 @@ body {
 .onboarding-card p { margin-bottom: 24px; opacity: 0.8; }
 
 .checkin-card .btn-secondary { margin-top: 12px; }
+.checkin-resume-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.checkin-resume-actions .btn-secondary { margin-top: 0; }
 .checkin-progress { font-size: 13px; opacity: 0.6; margin-bottom: 12px; letter-spacing: 0.04em; }
 .checkin-divider { margin: 16px 0 8px; opacity: 0.7; font-size: 14px; }
 .checkin-compass { font-size: 3rem; margin-bottom: 8px; }
@@ -908,6 +1091,19 @@ body {
   animation: none;
 }
 
+/* Crystals (§7.1 scattered fun) sit visually below Kindness Sparks (§7.6 earned): smaller,
+   cooler-toned, a slow bob instead of the spark's pulse — a treat on the way, not a prize. */
+.world-collectible.crystal {
+  font-size: clamp(18px, calc(34 * var(--px)), 34px) !important;
+  filter: drop-shadow(0 0 10px rgba(120, 205, 255, 0.85)) !important;
+  animation: crystal-bob 2.6s ease-in-out infinite;
+}
+
+@keyframes crystal-bob {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50%      { transform: translate(-50%, -62%) scale(1.06); }
+}
+
 @keyframes spark-pulse {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }
   50% { transform: translate(-50%, -58%) scale(1.12); }
@@ -933,6 +1129,14 @@ body {
   line-height: 1;
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
   transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+/* AI prop PNG in place of the emoji — a touch larger since the art has its own padding. */
+.stage-object-sprite .sprite-png.object {
+  display: block;
+  width: 3.4rem;
+  height: 3.4rem;
+  object-fit: contain;
 }
 
 .stage-object:hover .stage-object-sprite,
@@ -1038,17 +1242,306 @@ body {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
+/* Discovery counter — a quiet chip, deliberately not a progress bar (§7.7). */
+.discovery-chip {
+  position: absolute;
+  top: max(8px, calc(12 * var(--px)));
+  left: max(96px, calc(150 * var(--px)));
+  background: rgba(0, 0, 0, 0.42);
+  color: #fff;
+  font-size: clamp(11px, calc(16 * var(--px)), 16px);
+  font-weight: 700;
+  padding: calc(5 * var(--px)) calc(13 * var(--px));
+  border-radius: 999px;
+  border: 2px solid rgba(255, 214, 10, 0.35);
+  z-index: 11;
+  white-space: nowrap;
+}
+
+.discovery-chip.complete {
+  background: rgba(255, 214, 10, 0.92);
+  color: #4a2c00;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+/**
+ * Discoverable stage objects should read as "there is something here".
+ *
+ * Animate the SPRITE, never the button. Animating `.stage-object` itself means the
+ * element's box never settles, which makes it unclickable to automation (and to anything
+ * that waits for a stable hit target) — it broke the existing North Gate e2e click.
+ */
+.stage-object-sprite {
+  display: inline-block;
+  animation: object-beckon 2.6s ease-in-out infinite;
+}
+
+@keyframes object-beckon {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(calc(-7 * var(--px))) scale(1.07); }
+}
+
+/* Sparks: bigger and brighter, so they pull the eye across the meadow. */
+.world-collectible {
+  font-size: clamp(26px, calc(52 * var(--px)), 52px) !important;
+  filter: drop-shadow(0 0 16px rgba(255, 214, 10, 0.95)) !important;
+}
+
+/* ——— Reward juice: the Glow Gauge (spec §17B.2) ———
+   Earned-moment effects only. Ambient scenes stay quiet per the §17A.4 calm-first
+   stimulation budget — these classes are added for well under 2s and then removed. */
+
+.juice-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 85; /* above characters + bubbles, below modal overlays (100) */
+}
+
+.juice-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(14px, calc(30 * var(--px)), 30px);
+  height: clamp(14px, calc(30 * var(--px)), 30px);
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+
+/* The companion physically reacts — the first half of "cause and effect". */
+.character.is-celebrating .char-fullbody {
+  animation: companion-cheer 0.62s ease-in-out;
+}
+
+@keyframes companion-cheer {
+  0%   { transform: translateY(0) scale(1); }
+  28%  { transform: translateY(calc(-16 * var(--px))) scale(1.09) rotate(-5deg); }
+  55%  { transform: translateY(0) scale(1.02) rotate(4deg); }
+  78%  { transform: translateY(calc(-7 * var(--px))) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* The meter catches the burst. */
+.meter.meter-caught {
+  animation: meter-catch 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes meter-catch {
+  0%   { transform: scale(1); box-shadow: 0 0 0 rgba(255,214,10,0); }
+  40%  { transform: scale(1.35); box-shadow: 0 0 calc(26 * var(--px)) rgba(255,214,10,.95); }
+  100% { transform: scale(1); box-shadow: 0 0 0 rgba(255,214,10,0); }
+}
+
+/* The world responds — §17B.2: "the grass blooms where I walk". */
+.world-bloom {
+  position: absolute;
+  font-size: clamp(30px, calc(76 * var(--px)), 76px);
+  transform: translate(-50%, -50%) scale(0);
+  animation: bloom-in 2.2s ease-out forwards;
+  z-index: 86;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,.28));
+}
+
+@keyframes bloom-in {
+  0%   { transform: translate(-50%, -50%) scale(0) rotate(-22deg); opacity: 0; }
+  35%  { transform: translate(-50%, -50%) scale(1.18) rotate(6deg); opacity: 1; }
+  55%  { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: translate(-50%, -60%) scale(1) rotate(0deg); opacity: 0; }
+}
+
+/* A brief, gentle warming of the whole scene — the "slight lift" in saturation the
+   stimulation budget allows for a strong-choice consequence, nothing more. */
+.game-viewport.world-warmed::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 84;
+  background: radial-gradient(circle at 50% 62%, rgba(255,214,10,.42), transparent 68%);
+  animation: warm-pulse 1.9s ease-out forwards;
+}
+
+@keyframes warm-pulse {
+  0%   { opacity: 0; }
+  22%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* —— Ambient life (spec §7.7 / §17A.4 calm-first) ——————————————————————————————
+   Barely-there world motion — clouds, grass, water glints, dust. Few elements, slow,
+   low-opacity. Decorative only; the reduced-motion rule below freezes all of it. */
+.ambient-life {
+  position: absolute;
+  inset: 0;
+  /* Above the background PNG (z:auto/0), below the stones + characters (z ≥ 6). */
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* Dappled light — a large, very faint warm glow that drifts, like sun through leaves. */
+.ambient-dapple {
+  position: absolute;
+  width: clamp(180px, calc(460 * var(--px)), 460px);
+  height: clamp(140px, calc(360 * var(--px)), 360px);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,244,200,.16), rgba(255,240,190,.06) 55%, transparent 72%);
+  mix-blend-mode: soft-light;
+  animation-name: dapple-drift;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes dapple-drift {
+  0%   { transform: translate(0, 0); opacity: .5; }
+  50%  { transform: translate(calc(40 * var(--px)), calc(-22 * var(--px))); opacity: .9; }
+  100% { transform: translate(calc(74 * var(--px)), calc(10 * var(--px))); opacity: .55; }
+}
+
+.ambient-grass {
+  position: absolute;
+  width: clamp(20px, calc(46 * var(--px)), 46px);
+  height: clamp(30px, calc(70 * var(--px)), 70px);
+  transform-origin: 50% 100%;
+  background: linear-gradient(to top, rgba(58,124,66,.55), rgba(126,192,112,.26));
+  clip-path: polygon(48% 100%, 40% 40%, 34% 0, 30% 42%, 46% 100%, 50% 55%, 54% 100%, 70% 40%, 66% 4%, 60% 44%, 52% 100%);
+  opacity: .4;
+  animation-name: grass-sway;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@keyframes grass-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50%      { transform: rotate(3deg); }
+}
+
+.ambient-shimmer {
+  position: absolute;
+  width: clamp(10px, calc(22 * var(--px)), 22px);
+  height: clamp(4px, calc(8 * var(--px)), 8px);
+  border-radius: 50%;
+  background: rgba(255,255,255,.7);
+  filter: blur(1.5px);
+  opacity: 0;
+  animation-name: shimmer-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shimmer-twinkle {
+  0%, 100% { opacity: 0; transform: scaleX(.6); }
+  50%      { opacity: .8; transform: scaleX(1.1); }
+}
+
+.ambient-mote {
+  position: absolute;
+  width: clamp(5px, calc(11 * var(--px)), 11px);
+  height: clamp(5px, calc(11 * var(--px)), 11px);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,249,225,.85), rgba(255,240,200,.3) 55%, transparent 72%);
+  opacity: 0;
+  animation-name: mote-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes mote-drift {
+  0%   { opacity: 0; transform: translate(0, 0); }
+  25%  { opacity: .6; }
+  75%  { opacity: .5; }
+  100% { opacity: 0; transform: translate(calc(34 * var(--px)), calc(-72 * var(--px))); }
+}
+
+/* —— Diegetic stepping-stone path (spec §7.7) ——————————————————————————————————
+   In-world progress drawn as one connected SVG trail: stones the child walks, not a HUD
+   bar. Sits just above the ground-level stage objects so a cairn or sign can't occlude the
+   "you are here" stone. Non-interactive; the current stone glows and breathes as the quiet
+   arrival cue, the road ahead sits faint and dashed — no countdown, no pressure. */
+.progress-path {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 60;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* The worn footpath connecting the stones — this is what makes them read as *a path*. */
+.path-trail {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.path-trail.walked {
+  stroke: rgba(150, 175, 118, .6);
+  stroke-width: 9;
+}
+
+.path-trail.ahead {
+  stroke: rgba(255, 255, 255, .3);
+  stroke-width: 7;
+  stroke-dasharray: 3 26;
+}
+
+.path-stone-shadow {
+  fill: rgba(0, 0, 0, .28);
+}
+
+.path-stone-cap {
+  stroke: rgba(255, 255, 255, .28);
+  stroke-width: 2;
+}
+
+/* Stones still ahead sit dim and quiet. */
+.path-stone.ahead .path-stone-cap {
+  fill: #6f665c;
+  opacity: .5;
+}
+
+/* Stones already travelled carry a soft mossy warmth. */
+.path-stone.walked .path-stone-cap {
+  fill: #7f9a63;
+}
+
+/* The stone underfoot glows and breathes — the quiet arrival cue (§7.7). */
+.path-stone.here .path-stone-cap {
+  fill: #ffd76b;
+  animation: stone-breathe 3.4s ease-in-out infinite;
+}
+
+@keyframes stone-breathe {
+  0%, 100% { filter: drop-shadow(0 0 8px rgba(255, 206, 90, .55)); }
+  50%      { filter: drop-shadow(0 0 20px rgba(255, 206, 90, .95)); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    /**
+     * Without this, `infinite` animations (the avatar walk-bob, the companion thinking
+     * pulse, meter juice) keep *looping* — just imperceptibly fast. That still drives the
+     * compositor forever, which works against the §19 frame-rate budget on the Chromebook
+     * profile and is not what §20 "reduced motion disables shake/particles" asks for.
+     * Capping iterations at 1 actually stops them.
+     */
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-@media (max-width: 600px) {
-  .choice-panel { padding: 16px; }
-  .choice-btn { font-size: 14px; min-height: 48px; }
-}
+/* A narrow-viewport override for .choice-panel/.choice-btn used to live here, forcing
+   14px text and a 48px hit target — both below the §17A.4 floor (16px / 64px) the base
+   rules now enforce via clamp(). Removed: the clamp()s already shrink correctly on a
+   narrow `--px` container without ever crossing the floor, so this was redundant at best
+   and a silent accessibility regression at worst. */
 
 /* —— Play Together invite flow —— */
 .together-flow .together-card {

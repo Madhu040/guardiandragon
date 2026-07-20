@@ -1,0 +1,16 @@
+{
+  "id": "dlg_deer_tracks",
+  "chapterId": "ch1",
+  "speaker": "Deer",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "The deer says the new kid \u2014 Jamie \u2014 has been sitting by the bench since morning.",
+      "speaker": "Deer"
+    },
+    {
+      "text": "Nobody's said hello yet. Not once, all day.",
+      "speaker": "Deer"
+    }
+  ]
+}

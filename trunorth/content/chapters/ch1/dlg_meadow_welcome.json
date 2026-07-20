@@ -1,7 +1,7 @@
 {
   "id": "dlg_meadow_welcome",
   "chapterId": "ch1",
-  "speaker": "Flicker",
+  "speaker": "{companion}",
   "speakerAssetRef": "char_companion_dragon",
   "pages": [
     {

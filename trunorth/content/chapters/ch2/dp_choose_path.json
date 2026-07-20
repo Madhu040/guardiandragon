@@ -1,6 +1,6 @@
 {
   "id": "dp_choose_path",
-  "prompt": "Memories glow: Flicker has helped before. What do you want Flicker to know?",
+  "prompt": "Memories glow: {companion} has helped before. What do you want {companion} to know?",
   "inputMode": "choice",
   "themeSensitivity": "standard",
   "selSkills": [

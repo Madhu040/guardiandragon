@@ -61,7 +61,10 @@ export const serverConfig = {
   ]),
   companion: {
     apiKey: envString("ANTHROPIC_API_KEY", ""),
-    model: envString("COMPANION_MODEL", "claude-3-5-haiku-latest"),
+    // Pinned dated model ID (Consolidated tech spec v3.0 / Appendix F): a floating
+    // `-latest` alias can change under us, which would invalidate the red-team
+    // safety baseline. Re-pin deliberately when upgrading; see ADR-004.
+    model: envString("COMPANION_MODEL", "claude-haiku-4-5-20251001"),
     confidenceFloor: envNumber("CONFIDENCE_FLOOR", 0.55),
     timeoutMs: envNumber("COMPANION_TIMEOUT_MS", 8000),
   },

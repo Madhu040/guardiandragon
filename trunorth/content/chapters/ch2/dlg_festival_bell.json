@@ -1,0 +1,14 @@
+{
+  "id": "dlg_festival_bell",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "The festival bell \u2014 it rings once for every explorer who steps onto the stage."
+    },
+    {
+      "text": "Nervous or not. {companion} included. Especially {companion}."
+    }
+  ]
+}

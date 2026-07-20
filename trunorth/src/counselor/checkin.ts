@@ -177,3 +177,33 @@ export function checkinCompanionLine(placement: CheckinPlacement, companionName:
 
 export const CHECKIN_DISTRESS_LINE =
   "Those feelings sound really big and really important. Please tell a trusted grown-up how you're feeling — you deserve caring help in the real world too.";
+
+/**
+ * Distress-aware resume copy (spec §17D / §9.6). Shown when a returning child's
+ * previous session ended with `safetyFlag: distress`, instead of the standard
+ * cheerful welcome-back.
+ *
+ * ⚠️ SME SIGN-OFF PENDING — DRAFT. The spec is explicit that distress-path
+ * wording is SME-authored and never model-improvised. These strings are a
+ * placeholder so the branch is wired and testable; the SME must review and
+ * replace the wording before this ships to a real child.
+ */
+export const RESUME_DISTRESS = {
+  opening:
+    "Last time, some big feelings came up. I'm really glad you're back. We can keep going, or just sit here together for a bit — whatever feels right.",
+  sitAwhile:
+    "Okay. We'll just be here together for a moment. There's no rush at all — I'm right beside you.",
+  continueLabel: "Let's keep going",
+  sitLabel: "Just sit here for a bit",
+  readyLabel: "I'm ready now",
+} as const;
+
+/**
+ * True when a returning session should re-enter through the distress-aware
+ * check-in (spec §17D) rather than the standard welcome-back. Keyed off the
+ * transient `lastSafetyFlag` (cleared once the child acknowledges the prompt),
+ * not the event log — so it fires exactly once per distress episode.
+ */
+export function shouldResumeInDistress(lastSafetyFlag: SafetyFlag | null): boolean {
+  return lastSafetyFlag === "distress";
+}

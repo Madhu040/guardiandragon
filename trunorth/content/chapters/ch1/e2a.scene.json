@@ -1,0 +1,183 @@
+{
+  "id": "e2a",
+  "chapterId": "ch1",
+  "order": 3,
+  "movementTier": "A",
+  "background": "bg_meadow",
+  "gridMapId": "everbright-meadow",
+  "narration": "The rabbit friend wants to join the others, but hangs back near the pond, ears low. New things can feel big.",
+  "characters": [
+    {
+      "assetRef": "char_leftout",
+      "id": "leftout",
+      "position": [
+        1120,
+        760
+      ],
+      "expression": "worried"
+    },
+    {
+      "assetRef": "char_companion_dragon",
+      "id": "companion",
+      "position": [
+        520,
+        780
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        700,
+        800
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_deer",
+      "id": "helper_deer",
+      "position": [
+        1400,
+        780
+      ],
+      "expression": "happy"
+    }
+  ],
+  "triggers": [
+    {
+      "id": "shy_trigger",
+      "bounds": [
+        1020,
+        640,
+        200,
+        190
+      ],
+      "action": "startDecision",
+      "target": "dp_reassure_shy"
+    }
+  ],
+  "collectibles": [
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2a_a",
+      "position": [
+        250,
+        880
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2a_kind",
+      "position": [
+        1500,
+        760
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_reassure_shy"
+    },
+    {
+      "id": "crystal_e2a_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e2a_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        125,
+        394
+      ]
+    },
+    {
+      "id": "crystal_e2a_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        240,
+        578
+      ]
+    },
+    {
+      "id": "crystal_e2a_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1757,
+        869
+      ]
+    },
+    {
+      "id": "crystal_e2a_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1334,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e2a_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1546,
+        275
+      ]
+    },
+    {
+      "id": "crystal_e2a_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        605,
+        589
+      ]
+    }
+  ],
+  "decisionPoints": [
+    "dp_reassure_shy"
+  ],
+  "nextSceneId": "e2b",
+  "goal": "Someone's hiding out here, {name}, and I think they're scared. Let's go find them \u2014 gently.",
+  "objects": [
+    {
+      "id": "obj_hiding_bush",
+      "cell": [
+        22,
+        52
+      ],
+      "assetRef": "bush",
+      "label": "A rustling bush",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_hiding_bush"
+      }
+    },
+    {
+      "id": "obj_dropped_hat",
+      "cell": [
+        78,
+        88
+      ],
+      "assetRef": "dropped_hat",
+      "label": "A dropped hat",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_dropped_hat"
+      }
+    }
+  ],
+  "spawnCell": [
+    9,
+    31
+  ]
+}

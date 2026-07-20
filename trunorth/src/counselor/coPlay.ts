@@ -3,6 +3,12 @@
 const DISCUSS_PROMPTS: Record<string, string> = {
   dp_leftout_bench:
     "In the Meadow of Curiosity, a friend sits alone. What feeling might they have? Tell each other before you pick.",
+  dp_reassure_shy:
+    "The rabbit friend feels shy about joining. What helps you feel brave when something is new? Say it before you choose.",
+  dp_share_flower:
+    "You both want the last flower. What are some fair ways to share? Name one you've used before.",
+  dp_repair_oops:
+    "An accident hurt a friend's feelings. What does a good sorry sound like — and what makes it complete? Practice one together.",
   dp_ask_grownup:
     "When is it okay to ask a grown-up for help? Share a time you asked for help together.",
   dp_quest_start:

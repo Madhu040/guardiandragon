@@ -1,0 +1,183 @@
+{
+  "id": "e2b",
+  "chapterId": "ch1",
+  "order": 4,
+  "movementTier": "A",
+  "background": "bg_meadow",
+  "gridMapId": "everbright-meadow",
+  "narration": "In the tall grass, one last shiny sunflower catches the light. You and the deer friend both reach for it at the very same moment.",
+  "characters": [
+    {
+      "assetRef": "char_deer",
+      "id": "helper_deer",
+      "position": [
+        1080,
+        760
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_leftout",
+      "id": "leftout",
+      "position": [
+        1360,
+        780
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_companion_dragon",
+      "id": "companion",
+      "position": [
+        520,
+        780
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        720,
+        800
+      ],
+      "expression": "neutral"
+    }
+  ],
+  "triggers": [
+    {
+      "id": "share_trigger",
+      "bounds": [
+        980,
+        640,
+        200,
+        190
+      ],
+      "action": "startDecision",
+      "target": "dp_share_flower"
+    }
+  ],
+  "collectibles": [
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2b_a",
+      "position": [
+        1660,
+        820
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2b_kind",
+      "position": [
+        520,
+        690
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_share_flower"
+    },
+    {
+      "id": "crystal_e2b_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e2b_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        624,
+        286
+      ]
+    },
+    {
+      "id": "crystal_e2b_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        221,
+        470
+      ]
+    },
+    {
+      "id": "crystal_e2b_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1814,
+        697
+      ]
+    },
+    {
+      "id": "crystal_e2b_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1181,
+        988
+      ]
+    },
+    {
+      "id": "crystal_e2b_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1354,
+        221
+      ]
+    },
+    {
+      "id": "crystal_e2b_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1814,
+        362
+      ]
+    }
+  ],
+  "decisionPoints": [
+    "dp_share_flower"
+  ],
+  "nextSceneId": "e2c",
+  "goal": "Everyone's been picking flowers here. Let's go see what's left before we take any.",
+  "objects": [
+    {
+      "id": "obj_flower_patch",
+      "cell": [
+        30,
+        46
+      ],
+      "assetRef": "flower_patch",
+      "label": "The flower patch",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_flower_patch"
+      }
+    },
+    {
+      "id": "obj_empty_basket",
+      "cell": [
+        84,
+        39
+      ],
+      "assetRef": "basket",
+      "label": "An empty basket",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_empty_basket"
+      }
+    }
+  ],
+  "spawnCell": [
+    9,
+    31
+  ]
+}

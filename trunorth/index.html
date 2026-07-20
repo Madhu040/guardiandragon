@@ -7,9 +7,14 @@
     <meta name="theme-color" content="#1a1a2e" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <!--
+      Fonts are SELF-HOSTED (public/fonts), not fetched from Google Fonts.
+      Spec §13A.1/§13A.3: demo mode must make no external asset fetches and the
+      showcase must run with no internet at all. A CDN <link> here silently fell
+      back to system fonts on an offline stage. Guarded by tests/e2e/demo-mode.spec.ts.
+    -->
+    <link rel="preload" href="/fonts/nunito-latin-var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
     <title>TruNorth</title>
   </head>
   <body>

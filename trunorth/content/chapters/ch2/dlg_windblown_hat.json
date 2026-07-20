@@ -1,0 +1,14 @@
+{
+  "id": "dlg_windblown_hat",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "A little hat, blown off and left behind. Whoever wore it kept walking anyway."
+    },
+    {
+      "text": "Sometimes you lose something small on the way to somewhere new. That's alright."
+    }
+  ]
+}

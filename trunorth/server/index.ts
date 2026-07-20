@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import type { Context } from "hono";
 import { cors } from "hono/cors";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
@@ -89,7 +90,7 @@ app.get("/api/auth/me", async (c) => {
 });
 
 // Auth middleware for protected routes
-const authMiddleware = async (c: Parameters<Parameters<typeof app.use>[1]>[0], next: () => Promise<void>) => {
+const authMiddleware = async (c: Context<{ Variables: Variables }>, next: () => Promise<void>) => {
   const auth = c.req.header("Authorization");
   if (!auth?.startsWith("Bearer ")) return c.json({ error: "Unauthorized" }, 401);
 

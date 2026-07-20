@@ -1,0 +1,14 @@
+{
+  "id": "dlg_faded_memory_note",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "A note, the ink almost gone: 'Not broken. Just doing the job.'"
+    },
+    {
+      "text": "I don't know who wrote it. But it sounds like something worth remembering."
+    }
+  ]
+}

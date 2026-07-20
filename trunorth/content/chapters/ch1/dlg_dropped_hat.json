@@ -1,0 +1,16 @@
+{
+  "id": "dlg_dropped_hat",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "A hat, dropped in a hurry. Someone left somewhere fast.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Running away from a crowd usually means the crowd felt too big.",
+      "speaker": "{companion}"
+    }
+  ]
+}

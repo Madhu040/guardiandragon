@@ -1,0 +1,16 @@
+{
+  "id": "dlg_hiding_bush",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "The leaves keep moving. Someone's tucked in there, holding very still.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "They're not hiding from us. I think they're hiding from being seen at all.",
+      "speaker": "{companion}"
+    }
+  ]
+}

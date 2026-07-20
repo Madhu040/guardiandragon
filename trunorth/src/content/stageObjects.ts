@@ -18,6 +18,21 @@ export const OBJECT_SPRITES: Record<string, string> = {
   finish_flag: "🏁",
   finish_check: "✅",
   arch: "🌈",
+  // Ch.1 discoverables — each one gives the child a reason to walk somewhere and a piece
+  // of context that makes the scene's decision make sense when they reach it.
+  flower_crown: "💐",
+  play_ball: "🏐",
+  deer_friend: "🦌",
+  pond: "💧",
+  trail_marker: "🪨",
+  bush: "🌿",
+  dropped_hat: "🧢",
+  flower_patch: "🌼",
+  basket: "🧺",
+  broken_crown: "🥀",
+  petals: "🍃",
+  bell: "🔔",
+  note: "📝",
 };
 
 export const OBJECT_SPRITE_FALLBACK = "❔";

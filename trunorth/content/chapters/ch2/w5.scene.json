@@ -5,17 +5,173 @@
   "movementTier": "B",
   "background": "bg_cave",
   "gridMapId": "cave-of-purpose",
-  "narration": "Cave of Purpose. Glowing memories show Flicker warning about cliffs, storms, and real danger. Nova realizes: Flicker isn't broken — Flicker has a job. The hard part is telling danger from possibility. Thank Flicker.",
+  "narration": "Cave of Purpose. Glowing memories show Flicker warning about cliffs, storms, and real danger. Nova realizes: Flicker isn't broken \u2014 Flicker has a job. The hard part is telling danger from possibility. Thank Flicker.",
   "characters": [
-    { "assetRef": "char_wize", "id": "companion", "position": [960, 700], "expression": "calm" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [420, 800], "expression": "neutral" },
-    { "assetRef": "char_flicker_dragon", "id": "flicker", "position": [600, 760], "expression": "worried", "solidSize": [190, 80] }
+    {
+      "assetRef": "char_wize",
+      "id": "companion",
+      "position": [
+        960,
+        700
+      ],
+      "expression": "calm"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        420,
+        800
+      ],
+      "expression": "neutral"
+    },
+    {
+      "assetRef": "char_flicker_dragon",
+      "id": "flicker",
+      "position": [
+        600,
+        760
+      ],
+      "expression": "worried",
+      "solidSize": [
+        190,
+        80
+      ]
+    }
   ],
   "triggers": [
-    { "id": "purpose_trigger", "bounds": [400, 620, 600, 260], "action": "startDecision", "target": "dp_choose_path" }
+    {
+      "id": "purpose_trigger",
+      "bounds": [
+        400,
+        620,
+        600,
+        260
+      ],
+      "action": "startDecision",
+      "target": "dp_choose_path"
+    }
   ],
   "collectibles": [
-    { "id": "spark_cave", "assetRef": "collectible_spark", "position": [240, 780], "kind": "kindness_spark" }
+    {
+      "id": "spark_cave",
+      "assetRef": "collectible_spark",
+      "position": [
+        240,
+        780
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "id": "spark_choose_path_kind",
+      "assetRef": "collectible_spark",
+      "position": [
+        1700,
+        850
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_choose_path"
+    },
+    {
+      "id": "crystal_w5_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        106,
+        157
+      ]
+    },
+    {
+      "id": "crystal_w5_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1354,
+        718
+      ]
+    },
+    {
+      "id": "crystal_w5_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        547,
+        524
+      ]
+    },
+    {
+      "id": "crystal_w5_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1642,
+        254
+      ]
+    },
+    {
+      "id": "crystal_w5_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1315,
+        999
+      ]
+    },
+    {
+      "id": "crystal_w5_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1622,
+        664
+      ]
+    },
+    {
+      "id": "crystal_w5_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        835,
+        373
+      ]
+    }
   ],
-  "decisionPoints": ["dp_choose_path"]
+  "objects": [
+    {
+      "id": "obj_memory_scroll",
+      "cell": [
+        14,
+        88
+      ],
+      "assetRef": "notice_scroll",
+      "label": "A glowing, half-unrolled scroll",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_memory_scroll"
+      }
+    },
+    {
+      "id": "obj_faded_memory_note",
+      "cell": [
+        83,
+        79
+      ],
+      "assetRef": "note",
+      "label": "A faded note",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_faded_memory_note"
+      }
+    }
+  ],
+  "decisionPoints": [
+    "dp_choose_path"
+  ],
+  "goal": "These crystals are trying to show us something, {name}. Let's walk through and see what I've been remembering.",
+  "spawnCell": [
+    90,
+    31
+  ]
 }

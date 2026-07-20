@@ -1,0 +1,16 @@
+{
+  "id": "dlg_broken_crown",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "Oh no \u2014 the crown. It's come apart at the seam.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Accidents happen fast. What comes next is the part you choose.",
+      "speaker": "{companion}"
+    }
+  ]
+}

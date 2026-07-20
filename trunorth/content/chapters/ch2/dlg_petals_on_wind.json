@@ -1,0 +1,14 @@
+{
+  "id": "dlg_petals_on_wind",
+  "chapterId": "ch2",
+  "speaker": "Wize",
+  "speakerAssetRef": "char_wize",
+  "pages": [
+    {
+      "text": "Petals, scattered like something got knocked over in a hurry."
+    },
+    {
+      "text": "Or maybe someone was just twirling. Not every mess means something went wrong."
+    }
+  ]
+}

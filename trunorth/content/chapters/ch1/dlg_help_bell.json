@@ -1,0 +1,16 @@
+{
+  "id": "dlg_help_bell",
+  "chapterId": "ch1",
+  "speaker": "{companion}",
+  "speakerAssetRef": "char_companion_dragon",
+  "pages": [
+    {
+      "text": "A bell for when you need a grown-up. Someone put it here on purpose.",
+      "speaker": "{companion}"
+    },
+    {
+      "text": "Ringing it isn't giving up. It's knowing what you need.",
+      "speaker": "{companion}"
+    }
+  ]
+}

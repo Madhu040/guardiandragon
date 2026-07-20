@@ -64,6 +64,8 @@ export const appConfig = {
     worldMovement: viteBool("VITE_FEATURE_WORLD_MOVEMENT", true),
     /** Speak companion lines aloud via on-device SpeechSynthesis */
     voiceOutput: viteBool("VITE_FEATURE_VOICE_OUTPUT", true),
+    /** Event-mapped SFX + a low-energy ambient bed (spec §17B.4) */
+    soundEffects: viteBool("VITE_FEATURE_SOUND_EFFECTS", true),
   },
   voice: {
     /** Speech rate (1 = normal). Slightly slower reads better for kids. */
@@ -72,6 +74,15 @@ export const appConfig = {
     pitch: viteNumber("VITE_VOICE_PITCH", 1.1),
     /** Exact system voice name to use, if available (empty = auto-pick). */
     preferredVoice: viteString("VITE_VOICE_NAME", ""),
+  },
+  sfx: {
+    /** One-shot event cues (footsteps, discovery, decision stings, celebration). */
+    volume: viteNumber("VITE_SFX_VOLUME", 0.7),
+    /**
+     * Ambient exploration bed. Deliberately much quieter than event cues — spec §17A.4's
+     * calm-first budget: "reward chimes spike; the bed does not."
+     */
+    ambienceVolume: viteNumber("VITE_SFX_AMBIENCE_VOLUME", 0.15),
   },
   defaults: {
     companionName: viteString("VITE_DEFAULT_COMPANION_NAME", "Flicker"),
@@ -84,6 +95,12 @@ export const appConfig = {
   timing: {
     narrationAutoAdvanceMs: viteNumber("VITE_NARRATION_AUTO_ADVANCE_MS", 2200),
     demoCompanionDelayMs: viteNumber("VITE_DEMO_COMPANION_DELAY_MS", 350),
+    /**
+     * Pause before the single §17D auto-retry of a failed companion call. Long enough
+     * that the in-character "my words got tangled" line is readable, short enough to stay
+     * inside the §13A.5 stage budget alongside the 8s server-side timeout.
+     */
+    companionRetryDelayMs: viteNumber("VITE_COMPANION_RETRY_DELAY_MS", 600),
   },
   world: {
     /** Avatar speed in scene pixels per second (1920×1080 space). */
@@ -92,6 +109,13 @@ export const appConfig = {
     interactRadiusPx: viteNumber("VITE_INTERACT_RADIUS", 140),
     /** Companion follow smoothing (higher = stickier / slower catch-up). */
     companionFollowLag: viteNumber("VITE_COMPANION_FOLLOW_LAG", 0.88),
+    /**
+     * Following-camera zoom. 1 = off (the whole level fits on screen, the old diorama).
+     * >1 zooms in and follows the avatar, so the world extends off-screen and moving
+     * becomes exploring. 1.8 shows roughly a third of the level at once. URL `?zoom=N`
+     * overrides for testing (e2e boots with `?zoom=1` to keep framing out of logic tests).
+     */
+    cameraZoom: viteNumber("VITE_CAMERA_ZOOM", 1.8),
   },
   productName: viteString("VITE_PRODUCT_NAME", "TruNorth"),
 };

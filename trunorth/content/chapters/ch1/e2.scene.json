@@ -7,24 +7,164 @@
   "gridMapId": "everbright-meadow",
   "narration": "The rabbit friend smiles a little. Friendship in the meadow starts with one kind invitation.",
   "characters": [
-    { "assetRef": "char_leftout", "id": "leftout", "position": [960, 740], "expression": "happy" },
-    { "assetRef": "char_companion_dragon", "id": "companion", "position": [700, 780], "expression": "glow" },
-    { "assetRef": "char_avatar", "id": "avatar", "position": [820, 800], "expression": "happy" }
+    {
+      "assetRef": "char_leftout",
+      "id": "leftout",
+      "position": [
+        960,
+        740
+      ],
+      "expression": "happy"
+    },
+    {
+      "assetRef": "char_companion_dragon",
+      "id": "companion",
+      "position": [
+        700,
+        780
+      ],
+      "expression": "glow"
+    },
+    {
+      "assetRef": "char_avatar",
+      "id": "avatar",
+      "position": [
+        820,
+        800
+      ],
+      "expression": "happy"
+    }
   ],
   "triggers": [],
   "collectibles": [
-    { "id": "spark_e2", "assetRef": "collectible_spark", "position": [400, 800], "kind": "kindness_spark" }
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2",
+      "position": [
+        400,
+        800
+      ],
+      "kind": "kindness_spark"
+    },
+    {
+      "assetRef": "collectible_spark",
+      "id": "spark_e2_kind",
+      "position": [
+        1180,
+        700
+      ],
+      "kind": "kindness_spark",
+      "gate": "dp_leftout_bench"
+    },
+    {
+      "id": "crystal_e2_1",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        67,
+        157
+      ]
+    },
+    {
+      "id": "crystal_e2_2",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1795,
+        178
+      ]
+    },
+    {
+      "id": "crystal_e2_3",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1526,
+        211
+      ]
+    },
+    {
+      "id": "crystal_e2_4",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        835,
+        243
+      ]
+    },
+    {
+      "id": "crystal_e2_5",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        1776,
+        437
+      ]
+    },
+    {
+      "id": "crystal_e2_6",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        701,
+        481
+      ]
+    },
+    {
+      "id": "crystal_e2_7",
+      "assetRef": "crystal",
+      "kind": "crystal",
+      "position": [
+        317,
+        524
+      ]
+    }
   ],
   "objects": [
     {
+      "id": "obj_pond_edge",
+      "cell": [
+        74,
+        35
+      ],
+      "assetRef": "pond",
+      "label": "The pond's edge",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_pond_edge"
+      }
+    },
+    {
+      "id": "obj_trail_stones",
+      "cell": [
+        25,
+        60
+      ],
+      "assetRef": "trail_marker",
+      "label": "Stacked stones",
+      "hint": "Press E to look",
+      "interaction": {
+        "kind": "openDialog",
+        "dialogId": "dlg_trail_stones"
+      }
+    },
+    {
       "id": "obj_meadow_gate",
-      "cell": [42, 7],
+      "cell": [
+        42,
+        7
+      ],
       "assetRef": "finish_flag",
       "label": "North Gate",
       "hint": "Press E to continue",
-      "interaction": { "kind": "finish", "mode": "advance" }
+      "interaction": {
+        "kind": "finish",
+        "mode": "advance"
+      }
     }
   ],
   "decisionPoints": [],
-  "nextSceneId": "e3"
+  "nextSceneId": "e2a",
+  "goal": "The trail goes north from here. Let's not rush it \u2014 I want to see what's along the way."
 }
