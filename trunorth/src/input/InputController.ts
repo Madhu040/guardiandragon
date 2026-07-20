@@ -15,6 +15,9 @@ export class InputController {
   private enabled = true;
   private boundKeyDown = (e: KeyboardEvent) => this.onKeyDown(e);
   private boundKeyUp = (e: KeyboardEvent) => this.onKeyUp(e);
+  /** Fed by the touch joystick (TouchControls.ts) — a second input source, not a replacement. */
+  private touchVector = { x: 0, y: 0 };
+  private touchInteractQueued = false;
 
   attach(): void {
     window.addEventListener("keydown", this.boundKeyDown);
@@ -26,6 +29,8 @@ export class InputController {
     window.removeEventListener("keyup", this.boundKeyUp);
     this.pressed.clear();
     this.interactQueued = false;
+    this.touchVector = { x: 0, y: 0 };
+    this.touchInteractQueued = false;
   }
 
   setEnabled(enabled: boolean): void {
@@ -33,10 +38,26 @@ export class InputController {
     if (!enabled) {
       this.pressed.clear();
       this.interactQueued = false;
+      this.touchVector = { x: 0, y: 0 };
+      this.touchInteractQueued = false;
     }
   }
 
-  /** Normalized move vector in world space (x right, y down). */
+  /** Live joystick vector, already normalized to the unit circle by the touch layer. */
+  setTouchVector(x: number, y: number): void {
+    this.touchVector = { x, y };
+  }
+
+  /** One-shot tap on the touch interact button — merges into the same queue as E/Space/Enter. */
+  queueTouchInteract(): void {
+    this.touchInteractQueued = true;
+  }
+
+  /**
+   * Normalized move vector in world space (x right, y down). Keyboard and touch are two
+   * input sources feeding the same vector — summed then clamped to the unit circle, rather
+   * than one replacing the other, so nothing needs to know which device is in use.
+   */
   getMoveVector(): { x: number; y: number } {
     if (!this.enabled) return { x: 0, y: 0 };
     let x = 0;
@@ -45,10 +66,12 @@ export class InputController {
     if (this.pressed.has("ArrowRight") || this.pressed.has("d") || this.pressed.has("D")) x += 1;
     if (this.pressed.has("ArrowUp") || this.pressed.has("w") || this.pressed.has("W")) y -= 1;
     if (this.pressed.has("ArrowDown") || this.pressed.has("s") || this.pressed.has("S")) y += 1;
-    if (x !== 0 && y !== 0) {
-      const inv = 1 / Math.SQRT2;
-      x *= inv;
-      y *= inv;
+    x += this.touchVector.x;
+    y += this.touchVector.y;
+    const mag = Math.hypot(x, y);
+    if (mag > 1) {
+      x /= mag;
+      y /= mag;
     }
     return { x, y };
   }
@@ -60,10 +83,11 @@ export class InputController {
     return y > 0 ? "down" : "up";
   }
 
-  /** Consume a one-shot interact press (E / Space / Enter). */
+  /** Consume a one-shot interact press (E / Space / Enter, or a tap of the touch button). */
   consumeInteract(): boolean {
-    if (!this.interactQueued) return false;
+    if (!this.interactQueued && !this.touchInteractQueued) return false;
     this.interactQueued = false;
+    this.touchInteractQueued = false;
     return true;
   }
 

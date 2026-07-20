@@ -78,6 +78,54 @@ body {
 
 #app { height: 100vh; }
 
+/*
+ * Rotate prompt — the stage is a fixed 16:9 landscape layout (see .game-viewport
+ * above); on a touch device held portrait it would render as a small letterboxed
+ * strip. Pure CSS: no JS orientation listener needed, and it reacts live as the
+ * device rotates. Same `(pointer: coarse)` gate as the touch controls, so a narrow
+ * desktop window never triggers it.
+ */
+.rotate-prompt { display: none; }
+
+@media (pointer: coarse) and (orientation: portrait) {
+  .rotate-prompt {
+    display: flex;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--tru-purple);
+    color: var(--text-light);
+    text-align: center;
+    padding: 24px;
+  }
+
+  .rotate-prompt-icon {
+    font-size: 64px;
+    animation: rotate-prompt-spin 2.4s ease-in-out infinite;
+  }
+
+  .rotate-prompt p {
+    font-size: 18px;
+    font-weight: 700;
+    max-width: 280px;
+  }
+
+  #app { display: none; }
+}
+
+@keyframes rotate-prompt-spin {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-prompt-icon { animation: none; }
+}
+
 .game-root {
   width: 100vw;
   height: 100vh;
@@ -1240,6 +1288,91 @@ body {
   pointer-events: none;
   white-space: nowrap;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+/*
+ * Touch controls (floating virtual joystick + interact button) — only ever mounted by
+ * TouchControls.ts on a coarse-pointer (touch) device, so this CSS never applies on
+ * desktop. Sized well above the §17A.4 64px hit-target floor since these are the two
+ * controls a child's thumb repeatedly returns to.
+ */
+.touch-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  display: flex;
+}
+
+/* Catches every drag on the stage except the interact button's own footprint (painted
+   on top of this in DOM order) — the whole screen is "the joystick" until touched. */
+.touch-move-zone {
+  position: absolute;
+  inset: 0;
+  touch-action: none;
+  pointer-events: auto;
+}
+
+/*
+ * No resting position — appears centered on wherever the finger first touched down
+ * (TouchControls.ts sets left/top inline per-touch), not anchored to a screen corner.
+ * Purely visual: `.touch-move-zone` handles all the pointer events, so this stays
+ * `pointer-events: none` and can never intercept a touch meant for the zone beneath it.
+ */
+.touch-joystick {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: clamp(96px, calc(160 * var(--px)), 170px);
+  height: clamp(96px, calc(160 * var(--px)), 170px);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.28);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  opacity: 0;
+  transition: opacity 100ms ease-out;
+  pointer-events: none;
+}
+
+.touch-joystick.active {
+  opacity: 1;
+}
+
+.touch-joystick-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44%;
+  height: 44%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .touch-joystick { transition: none; }
+}
+
+.touch-interact-btn {
+  position: absolute;
+  right: max(16px, calc(24 * var(--px)));
+  bottom: max(64px, calc(90 * var(--px)));
+  width: clamp(76px, calc(120 * var(--px)), 130px);
+  height: clamp(76px, calc(120 * var(--px)), 130px);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 214, 10, 0.6);
+  background: var(--tru-purple);
+  color: var(--tru-gold);
+  font-size: clamp(28px, calc(44 * var(--px)), 48px);
+  line-height: 1;
+  touch-action: none;
+  pointer-events: auto;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.touch-interact-btn:active {
+  background: var(--tru-purple-dark, var(--tru-purple));
+  transform: scale(0.94);
 }
 
 /* Discovery counter — a quiet chip, deliberately not a progress bar (§7.7). */

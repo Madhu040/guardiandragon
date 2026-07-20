@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { isSfxEnabled, isSfxSupported, sfxForBand } from "../../src/audio/sfx.js";
+import {
+  isSfxEnabled,
+  isSfxSupported,
+  sfxForBand,
+  unlockAudioOnFirstGesture,
+} from "../../src/audio/sfx.js";
 
 /**
  * Spec §17B.4 — event-mapped SFX + a low-energy ambient bed.
@@ -22,5 +27,9 @@ describe("sfx (spec §17B.4)", () => {
 
   it("gives partial no cue of its own — the consequence copy already carries that beat", () => {
     expect(sfxForBand("partial")).toBeNull();
+  });
+
+  it("the mobile audio-unlock hook degrades to a no-op outside a browser, without throwing", () => {
+    expect(() => unlockAudioOnFirstGesture()).not.toThrow();
   });
 });

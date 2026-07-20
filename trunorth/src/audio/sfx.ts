@@ -104,6 +104,50 @@ export function playSfx(key: SfxKey): void {
 
 let ambience: HTMLAudioElement | null = null;
 let ambienceBroken = false;
+let unlocked = false;
+
+/**
+ * iOS Safari (and some Android browsers) block `<audio>.play()` unless it's tied to a
+ * user gesture at least once per page load — after that, every later programmatic
+ * `play()` call (footsteps, the ambient bed starting on a scene change, etc.) works
+ * fine even with no gesture in the call stack. Call this from a document-level
+ * "first tap" listener (see main.ts) so it always runs inside whichever tap actually
+ * starts the game, without needing to know which button that turns out to be.
+ *
+ * Muted play-then-pause, not a real play: this exists purely to satisfy the gesture
+ * requirement, so nothing should be audible regardless of how fast the promise settles.
+ */
+export function unlockAudioOnFirstGesture(): void {
+  if (unlocked || !supported()) return;
+  unlocked = true;
+
+  const silentUnlock = (el: HTMLAudioElement): void => {
+    const restoreVolume = el.volume;
+    el.volume = 0;
+    el.play()
+      .then(() => {
+        el.pause();
+        el.currentTime = 0;
+        el.volume = restoreVolume;
+      })
+      .catch(() => {
+        el.volume = restoreVolume;
+      });
+  };
+
+  for (const key of Object.keys(SFX_FILES) as SfxKey[]) {
+    const el = getClip(key);
+    if (el) silentUnlock(el);
+  }
+
+  if (!ambience) {
+    ambience = new Audio(AMBIENCE_FILE);
+    ambience.loop = true;
+    ambience.volume = appConfig.sfx.ambienceVolume;
+    ambience.addEventListener("error", () => { ambienceBroken = true; }, { once: true });
+  }
+  silentUnlock(ambience);
+}
 
 /** Start (or resume) the low-energy exploration bed. No-op if already playing or muted. */
 export function startAmbience(): void {

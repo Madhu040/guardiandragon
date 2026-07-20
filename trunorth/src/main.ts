@@ -45,7 +45,7 @@ import {
 } from "./together/inviteStore.js";
 import { getToken } from "./ui/auth.js";
 import { speakLine, stopSpeaking } from "./audio/speech.js";
-import { playSfx, sfxForBand, startAmbience, stopAmbience } from "./audio/sfx.js";
+import { playSfx, sfxForBand, startAmbience, stopAmbience, unlockAudioOnFirstGesture } from "./audio/sfx.js";
 import { buildJourneyReflection } from "./counselor/insights.js";
 import { shouldResumeInDistress } from "./counselor/checkin.js";
 import { SCENARIOS } from "./content/scenarios.js";
@@ -686,6 +686,12 @@ void (async () => {
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
   navigator.serviceWorker.register("/sw.js").catch(() => {});
 }
+
+// Audio unlock (spec: mobile support) — fires on the very first tap anywhere in the app,
+// whichever button that turns out to be (Play Now, Demo Mode, a touch-control tap…), so
+// iOS Safari's gesture requirement for <audio>.play() is satisfied without needing to
+// special-case any particular screen. See unlockAudioOnFirstGesture() for why.
+document.addEventListener("pointerdown", unlockAudioOnFirstGesture, { once: true });
 
 // Keep SCENARIOS referenced for tree-shaking clarity in hub
 void SCENARIOS;

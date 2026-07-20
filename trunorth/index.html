@@ -19,6 +19,16 @@
   </head>
   <body>
     <div id="app"></div>
+    <!--
+      Pure-CSS rotate prompt (see global.css) — the game stage is a fixed 16:9 landscape
+      layout, so on a touch device held portrait it would render as a small letterboxed
+      strip. Gated by the same `(pointer: coarse)` media query as the touch controls, so
+      it never shows on desktop even in a narrow window.
+    -->
+    <div class="rotate-prompt" role="status" aria-live="polite">
+      <div class="rotate-prompt-icon" aria-hidden="true">⤾</div>
+      <p>Turn your phone sideways to play</p>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

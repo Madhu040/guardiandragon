@@ -6,6 +6,7 @@
 import type { Scene, SceneCharacter, StageObject } from "../types/index.js";
 import { appConfig } from "../config/app.js";
 import { InputController, type Facing } from "../input/InputController.js";
+import { mountTouchControls, supportsTouch } from "../input/TouchControls.js";
 import { moveWithGridCollision } from "./GridMap.js";
 import { resolveGridLevel, type GridLevel } from "../content/gridLevels.js";
 import { objectWorldPos, sceneObjects } from "../content/stageObjects.js";
@@ -432,10 +433,24 @@ export class WorldRuntime {
     if (!moveHint && !this.frozen) {
       const mh = document.createElement("div");
       mh.className = "move-hint";
-      mh.textContent = "Move: WASD / arrows · Interact: E or Space";
+      mh.textContent = supportsTouch()
+        ? "Drag to move · Tap ✋ to interact"
+        : "Move: WASD / arrows · Interact: E or Space";
       this.viewport.appendChild(mh);
     } else if (moveHint) {
       moveHint.style.display = this.frozen ? "none" : "block";
+    }
+
+    // Touch joystick + interact button — only ever created on coarse-pointer (touch)
+    // devices, so desktop never gets the DOM or the pointer listeners (spec: mobile
+    // support must not disturb the desktop experience).
+    if (supportsTouch()) {
+      let touchControls = this.viewport.querySelector<HTMLElement>(".touch-controls");
+      if (!touchControls) {
+        mountTouchControls(this.viewport, this.input);
+        touchControls = this.viewport.querySelector<HTMLElement>(".touch-controls");
+      }
+      if (touchControls) touchControls.style.display = this.frozen ? "none" : "flex";
     }
 
     if (this.nearTarget && !this.frozen) {
@@ -467,6 +482,7 @@ export class WorldRuntime {
   private clearHint(): void {
     this.viewport?.querySelector(".interact-hint")?.remove();
     this.viewport?.querySelector(".move-hint")?.remove();
+    this.viewport?.querySelector(".touch-controls")?.remove();
   }
 }
 
