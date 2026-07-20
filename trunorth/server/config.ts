@@ -52,7 +52,13 @@ export const serverConfig = {
   port: envNumber("PORT", 3001),
   host: envString("HOST", "0.0.0.0"),
   jwtSecret: envString("JWT_SECRET", "change-me-to-a-long-random-string-in-production"),
-  databasePath: envString("DATABASE_PATH", "./data/trunorth.db"),
+  // `VERCEL` is set on every Vercel deployment (build + runtime). Its Node Functions have
+  // no writable disk outside /tmp, so the local-dev default (`./data/...`) crashes
+  // migrate.ts's `mkdirSync` on cold start. `/tmp` is writable but NOT persistent across
+  // cold starts or shared between instances — fine for stateless companion scoring, but
+  // parent auth / child profiles / progress / Play Together rooms can still appear to
+  // "reset". An explicit DATABASE_PATH env var overrides this either way.
+  databasePath: envString("DATABASE_PATH", process.env.VERCEL ? "/tmp/trunorth.db" : "./data/trunorth.db"),
   corsOrigins: envList("CORS_ORIGINS", [
     "http://localhost:5173",
     "http://localhost:4173",
