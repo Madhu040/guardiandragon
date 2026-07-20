@@ -1,22 +1,30 @@
 /**
  * Vercel Node.js Function entry point. Wraps the existing Hono `app`
  * (server/index.ts) so every `/api/*` route Vercel receives is forwarded to
- * it unchanged — the catch-all filename is what makes one function handle
- * every path under `/api`.
+ * it unchanged.
  *
- * File name matters here: `[...route].ts` (single brackets — "one or more
- * segments"), **not** `[[...route]].ts` (double brackets — "zero or more
- * segments", an optional catch-all). The double-bracket form is a Next.js
- * convention; plain Vercel Functions outside Next.js don't reliably honor it
- * as a true wildcard. Confirmed live, not assumed: with the double-bracket
- * file, every single-segment path (`/api/health`, `/api/companion`) reached
- * this function fine, but every multi-segment path (`/api/auth/register`,
- * `/api/auth/me`, `/api/progress/:id`, `/api/together/...`) 404'd at Vercel's
- * own routing layer — the request never even reached this function (the 404
- * carried Vercel's own branded error format, the same `cle1::` request-ID
- * signature the earlier crash pages had). Renamed to the single-bracket form,
- * which matches any depth `/api/<anything>` (just not bare `/api` with zero
- * segments, which this app never calls directly anyway).
+ * Routing is NOT done via a dynamic-segment filename anymore. It was
+ * (`api/[[...route]].ts`, then `api/[...route].ts`), and neither actually
+ * caught more than one path segment on this project — confirmed live, not
+ * assumed, and confirmed it wasn't just "segment count": `/api/nonsense`
+ * (one made-up segment) reached this function and got Hono's own plain
+ * `404 Not Found`, but `/api/health/` (the same working path, trailing
+ * slash), bare `/api`, and every multi-segment path (`/api/auth/register`,
+ * `/api/foo/bar`, …) all got *Vercel's own* branded `NOT_FOUND` page — the
+ * request never reached this function at all, regardless of which
+ * catch-all bracket convention named the file. Whatever the underlying
+ * cause (framework-preset routing-manifest generation, most likely — this
+ * project isn't Next.js, and dynamic-segment file routing may not be fully
+ * supported outside it), the filename convention wasn't reliable here.
+ *
+ * Fixed with the more explicit, well-documented mechanism instead: a static
+ * `api/index.ts` (no dynamic segment at all) plus a `vercel.json` rewrite
+ * (`/api/:path*` → `/api`) that routes every `/api/*` request to this one
+ * function regardless of depth. A Vercel *rewrite* (unlike a redirect)
+ * preserves the original request path for the destination handler, so
+ * `req.url` below still reflects the real incoming path (e.g.
+ * `/api/auth/register`) — this file's own routing logic (via Hono's `app`)
+ * is unaffected by the switch.
  *
  * Node runtime (not Edge) is required: `server/db/migrate.ts` opens a
  * better-sqlite3 file, which only runs under Node.
