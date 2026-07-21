@@ -455,8 +455,12 @@ export class WorldRuntime {
 
     if (this.nearTarget && !this.frozen) {
       hint.hidden = false;
-      hint.textContent =
+      const rawHint =
         (this.nearTarget.type === "object" && this.nearTarget.hint) || "Press E to interact";
+      // Authored hints are all "Press E to <verb>" (content JSON) — swap the keyboard
+      // instruction for the touch one rather than editing every hint string in every
+      // scene file.
+      hint.textContent = supportsTouch() ? rawHint.replace(/^Press E to/i, "Tap ✋ to") : rawHint;
       hint.style.left = `${(this.avatar.x / WORLD_W) * 100}%`;
       hint.style.top = `${((this.avatar.y - 160) / WORLD_H) * 100}%`;
     } else {
